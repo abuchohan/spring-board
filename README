@@ -1,0 +1,13 @@
+getting started
+
+
+npx prisma generate
+
+
+add db_url to env
+
+Create first migration 
+
+prisma migrate dev --name init
+
+to set up the users field
