@@ -6,10 +6,6 @@ async function main() {
         update: {},
         create: {
             email: 'hello@abu.com',
-            first_name: 'abu',
-            last_name: 'chohan',
-            roles: ['SUPER_ADMIN'],
-            username: 'abuchohan',
             password: 'hello123',
         },
     })

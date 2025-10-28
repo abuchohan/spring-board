@@ -4,7 +4,11 @@ import cors from 'cors'
 
 export const app = express()
 
+/**
+ * !! REMOVE FOR PROD
+ */
 app.use(cors())
+
 app.use(express.json())
 app.use('/api', router)
 

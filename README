@@ -1,13 +1,91 @@
-getting started
+# Database Setup (Prisma + Postgres)
 
+This project uses **Prisma** with a **PostgreSQL** database.  
+Since this is a **base template**, we keep it **lean** — no migration history during development.
 
+---
+
+## Local Development Workflow
+
+### 1. Sync Schema to Database
+
+Apply the Prisma schema directly to your local database ( or one of your choosing):
+
+```bash
+npx prisma db push
+```
+
+> Fast and migration-free — perfect for early development.
+
+---
+
+### 2. Generate Prisma Client
+
+After any schema changes:
+
+```bash
 npx prisma generate
+```
 
+> Keeps the Prisma Client in sync with your schema.
 
-add db_url to env
+---
 
-Create first migration 
+### 3. (Optional) Seed or Inspect Data
 
-prisma migrate dev --name init
+Seed the database (if `prisma/seed.ts` exists):
 
-to set up the users field
+```bash
+npx prisma db seed
+```
+
+Open Prisma Studio to view or edit data:
+
+```bash
+npx prisma studio
+```
+
+---
+
+### 4. Reset Database (Clean Slate)
+
+Drop and recreate all tables when needed:
+
+```bash
+npx prisma db push --force-reset
+```
+
+> Useful during early iteration when schemas change often.
+
+---
+
+### 5. When Template is Stable
+
+Once your base schema is finalized, create a clean initial migration:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+> This creates a single “baseline” migration for future projects.
+
+---
+
+## Summary
+
+| Task            | Command                              | Description                |
+| --------------- | ------------------------------------ | -------------------------- |
+| Sync schema     | `npx prisma db push`                 | Update DB instantly        |
+| Generate client | `npx prisma generate`                | Refresh Prisma client      |
+| Seed DB         | `npx prisma db seed`                 | Run seed script            |
+| Inspect data    | `npx prisma studio`                  | Open DB UI                 |
+| Reset DB        | `npx prisma db push --force-reset`   | Rebuild DB                 |
+| Create baseline | `npx prisma migrate dev --name init` | Generate initial migration |
+
+---
+
+## Notes
+
+- No migration history is kept until you're ready for production.
+- Use `db push` for fast local development.
+- Use `migrate dev` only once you stabilize your template schema.
