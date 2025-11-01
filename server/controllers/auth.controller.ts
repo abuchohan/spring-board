@@ -2,7 +2,6 @@ import { type Request, type Response } from 'express'
 import prisma from '../prisma/client.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { error } from 'console'
 
 const JWT_SECRET = process.env.JWT_SECRET
 const SALT_ROUNDS = 10

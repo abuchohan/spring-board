@@ -1,16 +1,18 @@
 import { Router } from 'express'
-import {
-    register,
-    login,
-    // forgotPassword,
-    // resetPassword,
-} from '../controllers/auth.controller.js'
+import { register, login } from '../controllers/auth.controller.js'
 
 export const authRouter = Router()
 
-authRouter.use('/register', register)
-authRouter.use('/login', login)
-// authRouter.use('/forgot-password', register)
-// authRouter.use('/reset-password', register)
+authRouter.get('/register', register)
+authRouter.get('/login', login)
+/**
+ * TODO: Add Routes
+ * 
+    authRouter.get('/refresh-token')
+    authRouter.get('/forgot-password')
+    authRouter.get('/forgot-password/:token')
+    authRouter.get('/me')
+    authRouter.get('/logout')
+ */
 
 export default authRouter

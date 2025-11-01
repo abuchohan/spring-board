@@ -3,15 +3,15 @@ import prisma from '../prisma/client.js'
 
 export async function getUser(req: Request, res: Response) {
     try {
-        const { username } = req.params
+        const { id } = req.params
 
-        if (!username) {
-            return res.status(400).json({ error: 'Username is required' })
+        if (!id) {
+            return res.status(400).json({ error: 'Id is required' })
         }
 
         const user = await prisma.user.findFirst({
             where: {
-                username: username,
+                id: id,
             },
         })
 
