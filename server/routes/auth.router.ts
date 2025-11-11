@@ -1,18 +1,22 @@
 import { Router } from 'express'
-import { register, login } from '../controllers/auth.controller.js'
+import {
+    register,
+    login,
+    logout,
+    resetPassword,
+    resetPasswordToken,
+    me,
+} from '../controllers/auth.controller.js'
+import { verifySession } from '../middleware/verifySession.middleware.js'
 
 export const authRouter = Router()
 
-authRouter.get('/register', register)
-authRouter.get('/login', login)
-/**
- * TODO: Add Routes
- * 
-    authRouter.get('/refresh-token')
-    authRouter.get('/forgot-password')
-    authRouter.get('/forgot-password/:token')
-    authRouter.get('/me')
-    authRouter.get('/logout')
- */
+authRouter.post('/register', register)
+authRouter.post('/login', login)
+authRouter.post('/reset-password', resetPassword)
+authRouter.post('/reset-password/:token', resetPasswordToken)
+
+authRouter.post('/logout', verifySession, logout)
+authRouter.get('/me', verifySession, me)
 
 export default authRouter

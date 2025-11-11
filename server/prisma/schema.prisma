@@ -8,11 +8,31 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(cuid())
-  createdAt  DateTime @default(now())
-  email      String   @unique
-  password   String
+  id            String          @id @default(cuid())
+  createdAt     DateTime        @default(now())
+  email         String          @unique
+  password      String
+  Session       Session[]
+  PasswordReset PasswordReset[]
 
   @@map("users")
 }
 
+model PasswordReset {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String   @unique 
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  sessionId String   @unique
+  userId    String   @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}

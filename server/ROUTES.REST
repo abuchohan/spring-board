@@ -1,0 +1,68 @@
+@baseUrl = http://localhost:5000/api
+
+### AUTH ROUTES
+
+# --- Register ---
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+# --- LOGIN ---
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+
+### 
+
+
+# --- Logout ---
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+
+###
+
+# --- Reset Password ---
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+    "email": "test@example.com"
+}
+
+###
+
+
+# --- Reset Password ---
+POST {{baseUrl}}/auth/reset-password/02f98e3173e6285cf7632a4f21f849934ad1a374df9edef33d488fdd027a8ab2
+Content-Type: application/json
+
+{
+    "password": "password123"
+}
+
+###
+
+
+
+
+
+# --- me ---
+GET {{baseUrl}}/auth/me
+Content-Type: application/json
+Cookie: session_id=e767e237-81ba-4ea7-8078-88c324f46ae4
+
+###
+
+
+
