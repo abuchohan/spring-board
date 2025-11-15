@@ -11,7 +11,7 @@ export async function verifySession(
         const sessionId = req.cookies.session_id
 
         if (!sessionId) {
-            return res.status(400).json({ message: 'No session found' })
+            return res.status(401).json({ message: 'No session found' })
         }
 
         const currentSession = await prisma.session.findUnique({

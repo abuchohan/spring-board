@@ -1,34 +1,53 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Link } from 'react-router-dom'
 import App from '@/App'
 import LoginPage from '@/Pages/Login/LoginPage'
+import Dashboard from '@/Pages/Dashboard/Dashboard'
+import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute'
+import PublicRoute from '@/components/PublicRoute/PublicRoute'
 
 export const router = createBrowserRouter([
     {
-        path: '/welcome',
+        path: '/',
         element: <App />,
-    },
-    {
-        path: '/login',
-        element: <LoginPage />,
-    },
-    {
-        // element: <ProtectedRoute />, // everything inside is protected
         children: [
             {
-                path: '/',
-                // element: <DashboardLayout />,
+                index: true,
+                element: (
+                    <>
+                        <h1>Marketing Page</h1> <Link to="/login">Login</Link>
+                    </>
+                ),
+            },
+            {
+                element: <PublicRoute />,
                 children: [
                     {
-                        index: true,
-                        element: <h1>Welcome to your Dashboard</h1>,
+                        path: '/login',
+                        element: <LoginPage />,
                     },
+                ],
+            },
+
+            {
+                element: <ProtectedRoute />,
+                children: [
                     {
-                        path: 'settings',
-                        element: <h1>Settings Page</h1>,
-                    },
-                    {
-                        path: 'profile',
-                        element: <h1>Profile Page</h1>,
+                        path: '/dashboard',
+                        element: <Dashboard />,
+                        children: [
+                            {
+                                index: true,
+                                element: <h1>Welcome to your Dashboard</h1>,
+                            },
+                            {
+                                path: 'settings',
+                                element: <h1>Settings Page</h1>,
+                            },
+                            {
+                                path: 'profile',
+                                element: <h1>Profile Page</h1>,
+                            },
+                        ],
                     },
                 ],
             },

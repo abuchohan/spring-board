@@ -258,6 +258,7 @@ export async function me(req: Request, res: Response) {
     try {
         const { user, session } = req
 
+        // when this route is called refresh session for another 3 days
         const newExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
 
         await prisma.session.update({
@@ -273,7 +274,10 @@ export async function me(req: Request, res: Response) {
         })
 
         res.status(200).json({
-            user,
+            user: {
+                id: user?.id,
+                email: user?.email,
+            },
             message: 'Your session token has been refreshed',
             session: {
                 oldSession: session!.expiresAt,

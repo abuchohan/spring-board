@@ -1,13 +1,13 @@
 import { authSelectors } from '@/redux/auth/selectors'
-import { Navigate, Outlet } from 'react-router'
 import { useAppSelector } from '@/redux/hooks/hooks'
+import { Navigate, Outlet } from 'react-router'
 import { Spinner } from '../ui/spinner'
 
-const ProtectedRoute = () => {
+const PublicRoute = () => {
     const { isAuthenticated, status } = useAppSelector(authSelectors.slice)
 
-    // block the page whilst checking the auth
-    if (status == 'checking' || status == 'idle') {
+    // block public pages to see if the user is at the login pages
+    if (status === 'idle' || status == 'checking') {
         return (
             <div className="flex items-center justify-center h-screen w-full">
                 <Spinner className="size-8" />
@@ -15,7 +15,7 @@ const ProtectedRoute = () => {
         )
     }
 
-    return !isAuthenticated ? <Navigate to="/login" replace /> : <Outlet />
+    return isAuthenticated ? <Navigate to="/dashboard" replace /> : <Outlet />
 }
 
-export default ProtectedRoute
+export default PublicRoute
