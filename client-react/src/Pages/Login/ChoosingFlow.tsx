@@ -6,7 +6,6 @@ import {
     CardFooter,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import type { AuthFlow } from './LoginPage'
 
 const ChoosingFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
@@ -20,26 +19,33 @@ const ChoosingFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                     Select an option to continue
                 </CardDescription>
             </CardHeader>
+            <div className="h-4" />
+
             <CardContent className="space-y-4 flex-col flex">
-                <Button size={'lg'} disabled>
+                <Button className="hover:cursor-pointer" size={'lg'} disabled>
                     Sign in with Google
                 </Button>
-                <Button onClick={() => setFlow('login')}>
+                <Button
+                    className="hover:cursor-pointer"
+                    size={'lg'}
+                    onClick={() => setFlow('login')}
+                >
                     Sign in with Email
                 </Button>
-                <Button disabled>Sign in with SSO</Button>
+                <Button className="hover:cursor-pointer" disabled size={'lg'}>
+                    Sign in with SSO
+                </Button>
             </CardContent>
-            <CardFooter className="flex flex-col space-y-3">
-                <Separator />
+            <div className="h-4" />
 
+            <CardFooter className="flex flex-col space-y-3">
                 <p className="text-sm text-center text-muted-foreground">
-                    Don’t have an account?
+                    Don’t have an account?{' '}
                     <a
                         href="#"
                         onClick={() => setFlow('register')}
                         className="text-primary hover:underline"
                     >
-                        {' '}
                         Create one
                     </a>
                 </p>

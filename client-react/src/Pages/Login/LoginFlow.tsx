@@ -20,20 +20,20 @@ import { useAppDispatch } from '@/redux/hooks/hooks'
 import { useNavigate } from 'react-router'
 import { loginUser } from '@/redux/auth/authThunks'
 import type { AuthFlow } from './LoginPage'
-import { Alert } from '@/components/ui/alert'
-import { AlertCircleIcon } from 'lucide-react'
 import { getErrorMessage } from '@/utils/error'
+import { Spinner } from '@/components/ui/spinner'
+import { toast } from 'sonner'
 
 const loginSchema = z.object({
     email: z.email(),
-    password: z.string().min(8),
+    password: z.string().min(1, { message: 'Please enter a password' }),
 })
 
 type LoginFormData = z.infer<typeof loginSchema>
 
 const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [serverError, setServerError] = useState<string>('')
+
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
@@ -45,9 +45,15 @@ const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                 loginUser({ email: data.email, password: data.password })
             ).unwrap()
 
+            toast.info('Signed in sucessfully', {
+                duration: 2000,
+            })
             navigate('/dashboard')
         } catch (err: unknown) {
-            setServerError(getErrorMessage(err) || 'Something went wrong')
+            toast.error(getErrorMessage(err) || 'Something went wrong', {
+                duration: Infinity,
+                closeButton: true,
+            })
         } finally {
             setIsLoading(false)
         }
@@ -65,12 +71,13 @@ const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
         <>
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-center">
-                    Welcome back
+                    Welcome
                 </CardTitle>
                 <CardDescription className="text-center">
                     Sign in to your account to continue
                 </CardDescription>
             </CardHeader>
+            <div className="h-4" />
 
             <CardContent className="space-y-4">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -97,6 +104,11 @@ const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                             placeholder="••••••••"
                             {...register('password')}
                         />
+                        {errors.password && (
+                            <p className="text-sm text-red-500">
+                                {errors.password.message}
+                            </p>
+                        )}
                     </div>
 
                     <Button
@@ -105,6 +117,7 @@ const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                         disabled={isLoading}
                     >
                         {!isLoading ? 'Sign in' : 'Loading'}
+                        {isLoading && <Spinner />}
                     </Button>
                 </form>
             </CardContent>
@@ -113,22 +126,15 @@ const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                 <Separator />
 
                 <p className="text-sm text-center text-muted-foreground">
-                    <a
+                    <button
+                        type="button"
                         onClick={() => setFlow('choosing')}
-                        className="text-primary hover:underline"
+                        className="text-primary hover:underline hover:cursor-pointer"
                     >
-                        {' '}
                         Back to Login
-                    </a>
+                    </button>
                 </p>
             </CardFooter>
-
-            {serverError && (
-                <Alert variant="destructive" className="mt-4">
-                    <AlertCircleIcon className="h-4 w-4" />
-                    <p>{serverError}</p>
-                </Alert>
-            )}
         </>
     )
 }

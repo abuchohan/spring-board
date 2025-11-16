@@ -49,12 +49,12 @@ export async function login(req: Request, res: Response) {
 
         const user = await prisma.user.findUnique({ where: { email: email } })
         if (!user) {
-            return res.status(401).json({ error: 'Invalid Email' })
+            return res.status(401).json({ error: 'Invalid Credientials' })
         }
 
         const isValid = await bcrypt.compare(password, user.password)
         if (!isValid) {
-            return res.status(401).json({ error: 'Invalid Password' })
+            return res.status(401).json({ error: 'Invalid Credientials' })
         }
 
         const sessionId = crypto.randomUUID()

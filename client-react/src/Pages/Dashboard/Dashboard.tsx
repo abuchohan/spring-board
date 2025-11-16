@@ -13,23 +13,27 @@ import {
 } from '@/components/ui/sidebar'
 import { logoutUser } from '@/redux/auth/authThunks'
 import { useAppDispatch } from '@/redux/hooks/hooks'
-import { NavLink, useNavigate } from 'react-router'
+import { NavLink, Outlet, useNavigate } from 'react-router'
 
 import { Home, Users, Settings } from 'lucide-react'
+import { toast } from 'sonner'
 
 const Dashboard = () => {
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
     const LogoutHandler = async () => {
-        await dispatch(logoutUser())
+        const res = await dispatch(logoutUser())
+        if (res) {
+            toast.info(`You've logged out`)
+        }
         navigate('/login')
     }
 
     // Menu items for the sidebar
     const items = [
         { title: 'Dashboard', to: '/dashboard', icon: Home },
-        { title: 'Users', to: '/users', icon: Users },
-        { title: 'Settings', to: '/settings', icon: Settings },
+        { title: 'Users', to: '/dashboard/users', icon: Users },
+        { title: 'Settings', to: '/dashboard/settings', icon: Settings },
     ]
 
     return (
@@ -74,6 +78,7 @@ const Dashboard = () => {
                     <Button onClick={LogoutHandler} className="mb-4">
                         Log Out
                     </Button>
+                    <Outlet />
                 </main>
             </SidebarProvider>
         </>

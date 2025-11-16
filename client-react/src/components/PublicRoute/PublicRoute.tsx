@@ -2,6 +2,7 @@ import { authSelectors } from '@/redux/auth/selectors'
 import { useAppSelector } from '@/redux/hooks/hooks'
 import { Navigate, Outlet } from 'react-router'
 import { Spinner } from '../ui/spinner'
+import { AnimatePresence, motion } from 'framer-motion'
 
 const PublicRoute = () => {
     const { isAuthenticated, status } = useAppSelector(authSelectors.slice)
@@ -15,7 +16,21 @@ const PublicRoute = () => {
         )
     }
 
-    return isAuthenticated ? <Navigate to="/dashboard" replace /> : <Outlet />
+    return isAuthenticated ? (
+        <Navigate to="/dashboard" replace />
+    ) : (
+        <AnimatePresence mode="wait">
+            <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+            >
+                <Outlet />
+            </motion.div>
+        </AnimatePresence>
+    )
 }
 
 export default PublicRoute

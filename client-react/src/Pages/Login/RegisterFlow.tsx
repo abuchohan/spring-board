@@ -15,11 +15,10 @@ import { z } from 'zod'
 import type { AuthFlow } from './LoginPage'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
-import { useNavigate } from 'react-router'
 import { useAppDispatch } from '@/redux/hooks/hooks'
 import { registerUser } from '@/redux/auth/authThunks'
-import { Alert } from '@/components/ui/alert'
-import { AlertCircleIcon } from 'lucide-react'
+import { getErrorMessage } from '@/utils/error'
+import { toast } from 'sonner'
 
 const registerSchema = z.object({
     email: z.email(),
@@ -30,10 +29,8 @@ type LoginFormData = z.infer<typeof registerSchema>
 
 const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
     const dispatch = useAppDispatch()
-    const navigate = useNavigate()
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [serverError, setServerError] = useState<string | null>(null)
 
     const {
         register,
@@ -45,14 +42,26 @@ const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
 
     const onSubmit = async (data: LoginFormData) => {
         setIsLoading(true)
-        setServerError(null)
 
-        const res = await dispatch(
-            registerUser({ email: data.email, password: data.password })
-        )
-        setIsLoading(false)
+        try {
+            await dispatch(
+                registerUser({ email: data.email, password: data.password })
+            ).unwrap()
 
-        navigate('/dashboard')
+            toast.info('Registration Sucessful. Please login to continue', {
+                dismissible: true,
+                closeButton: true,
+                duration: Infinity,
+            })
+            setFlow('login')
+        } catch (err: unknown) {
+            toast.error(getErrorMessage(err) || 'Something went wrong', {
+                dismissible: true,
+                closeButton: true,
+            })
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -72,6 +81,7 @@ const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                             id="email"
                             type="email"
                             placeholder="you@example.com"
+                            onError={() => console.log('error')}
                             {...register('email')}
                         />
                         {errors.email && (
@@ -101,26 +111,18 @@ const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                     </Button>
                 </form>
             </CardContent>
+            <div className="h-4" />
 
             <CardFooter className="flex flex-col space-y-3">
                 <p className="text-sm text-center text-muted-foreground">
                     <a
-                        href="#"
                         onClick={() => setFlow('choosing')}
-                        className="text-primary hover:underline"
+                        className="text-primary hover:underline hover:cursor-pointer"
                     >
-                        {' '}
                         Back to Login
                     </a>
                 </p>
             </CardFooter>
-
-            {serverError && (
-                <Alert variant="destructive" className="mt-4">
-                    <AlertCircleIcon className="h-4 w-4" />
-                    <p>{serverError}</p>
-                </Alert>
-            )}
         </>
     )
 }
