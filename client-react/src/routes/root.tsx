@@ -4,6 +4,7 @@ import LoginPage from '@/Pages/Login/LoginPage'
 import Dashboard from '@/Pages/Dashboard/Dashboard'
 import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute'
 import PublicRoute from '@/components/PublicRoute/PublicRoute'
+import LandingPage from '@/Pages/LandingPage/LandingPage'
 
 export const router = createBrowserRouter([
     {
@@ -12,11 +13,7 @@ export const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: (
-                    <>
-                        <h1>Marketing Page</h1> <Link to="/login">Login</Link>
-                    </>
-                ),
+                element: <LandingPage />,
             },
             {
                 element: <PublicRoute />,
