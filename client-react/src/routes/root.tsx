@@ -1,10 +1,11 @@
-import { createBrowserRouter, Link } from 'react-router-dom'
+import { createBrowserRouter } from 'react-router-dom'
 import App from '@/App'
 import LoginPage from '@/Pages/Login/LoginPage'
 import Dashboard from '@/Pages/Dashboard/Dashboard'
 import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute'
 import PublicRoute from '@/components/PublicRoute/PublicRoute'
 import LandingPage from '@/Pages/LandingPage/LandingPage'
+import Users from '@/Pages/UsersPage/Users'
 
 export const router = createBrowserRouter([
     {
@@ -38,7 +39,7 @@ export const router = createBrowserRouter([
                             },
                             {
                                 path: 'users',
-                                element: <h1>Users Page</h1>,
+                                element: <Users />,
                             },
                             {
                                 path: 'profile',

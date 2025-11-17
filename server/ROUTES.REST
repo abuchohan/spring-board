@@ -65,4 +65,13 @@ Cookie: session_id=e767e237-81ba-4ea7-8078-88c324f46ae4
 ###
 
 
+# --- me ---
+GET {{baseUrl}}/users
+Content-Type: application/json
+
+###
+
+
+
+
 
