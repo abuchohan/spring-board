@@ -5,6 +5,7 @@ import {
     logout,
     resetPassword,
     resetPasswordToken,
+    validateResetToken,
     me,
 } from '../controllers/auth.controller.js'
 import { verifySession } from '../middleware/verifySession.middleware.js'
@@ -14,7 +15,8 @@ export const authRouter = Router()
 authRouter.post('/register', register)
 authRouter.post('/login', login)
 authRouter.post('/reset-password', resetPassword)
-authRouter.post('/reset-password/:token', resetPasswordToken)
+authRouter.get('/reset-password/:resetToken/validate', validateResetToken)
+authRouter.post('/reset-password/:resetToken', resetPasswordToken)
 
 authRouter.post('/logout', verifySession, logout)
 authRouter.get('/me', verifySession, me)

@@ -181,14 +181,45 @@ export async function resetPassword(req: Request, res: Response) {
     }
 }
 
+export async function validateResetToken(req: Request, res: Response) {
+    try {
+        const { resetToken } = req.params
+
+        if (!resetToken) {
+            return res
+                .status(400)
+                .json({ message: 'Please provide a reset token' })
+        }
+
+        const passwordReset = await prisma.passwordReset.findUnique({
+            where: {
+                token: resetToken,
+                used: false,
+            },
+        })
+
+        if (!passwordReset) {
+            return res.status(400).json({ message: 'Invalid Reset Token' })
+        }
+
+        if (passwordReset.expiresAt < new Date()) {
+            return res.status(400).json({ message: 'Your Token has expired' })
+        }
+
+        return res.status(200).json({ message: 'Token is valid' })
+    } catch (err) {
+        return res.status(500).json({ error: 'Internal Server Error' })
+    }
+}
+
 export async function resetPasswordToken(req: Request, res: Response) {
     try {
-        const { token } = req.params
+        const { resetToken } = req.params
         const { password } = req.body
 
         console.log(req.params)
 
-        if (!token) {
+        if (!resetToken) {
             return res
                 .status(400)
                 .json({ message: 'Please provide a reset token' })
@@ -202,7 +233,7 @@ export async function resetPasswordToken(req: Request, res: Response) {
 
         const passwordReset = await prisma.passwordReset.findUnique({
             where: {
-                token: token,
+                token: resetToken,
                 used: false,
             },
         })

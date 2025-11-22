@@ -7,6 +7,8 @@ import PublicRoute from '@/components/PublicRoute/PublicRoute'
 import LandingPage from '@/Pages/LandingPage/LandingPage'
 import Users from '@/Pages/UsersPage/Users'
 
+import ResetPasswordWithToken from '@/Pages/Login/ResetPasswordWithToken'
+
 export const router = createBrowserRouter([
     {
         path: '/',
@@ -22,6 +24,10 @@ export const router = createBrowserRouter([
                     {
                         path: '/login',
                         element: <LoginPage />,
+                    },
+                    {
+                        path: '/reset-password/:resetToken',
+                        element: <ResetPasswordWithToken />,
                     },
                 ],
             },

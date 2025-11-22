@@ -24,6 +24,10 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from '@/components/ui/sidebar'
+import { useNavigate } from 'react-router'
+import { useAppDispatch } from '@/redux/hooks/hooks'
+import { logoutUser } from '@/redux/auth/authThunks'
+import { toast } from 'sonner'
 
 export function NavUser({
     user,
@@ -35,6 +39,21 @@ export function NavUser({
     }
 }) {
     const { isMobile } = useSidebar()
+
+    const navigate = useNavigate()
+    const dispatch = useAppDispatch()
+
+    const LogoutHandler = async () => {
+        await dispatch(logoutUser())
+
+        const res = await dispatch(logoutUser())
+
+        if (res) {
+            toast.info(`You've logged out`)
+        }
+
+        navigate('/login')
+    }
 
     return (
         <SidebarMenu>
@@ -108,7 +127,10 @@ export function NavUser({
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={LogoutHandler}
+                            className="hover:cursor-pointer"
+                        >
                             <IconLogout />
                             Log out
                         </DropdownMenuItem>

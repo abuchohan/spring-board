@@ -3,11 +3,9 @@ import {
     CardTitle,
     CardDescription,
     CardContent,
-    CardFooter,
 } from '@/components/ui/card'
 
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -19,13 +17,27 @@ import { useAppDispatch } from '@/redux/hooks/hooks'
 import { registerUser } from '@/redux/auth/authThunks'
 import { getErrorMessage } from '@/utils/error'
 import { toast } from 'sonner'
+import {
+    Field,
+    FieldDescription,
+    FieldGroup,
+    FieldLabel,
+} from '@/components/ui/field'
 
-const registerSchema = z.object({
-    email: z.email(),
-    password: z.string().min(8),
-})
+const registerSchema = z
+    .object({
+        email: z.email(),
+        password: z
+            .string()
+            .min(8, { message: 'Password must be at least 8 characters' }),
+        confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords don't match",
+        path: ['confirmPassword'],
+    })
 
-type LoginFormData = z.infer<typeof registerSchema>
+type RegisterFormData = z.infer<typeof registerSchema>
 
 const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
     const dispatch = useAppDispatch()
@@ -36,11 +48,11 @@ const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<LoginFormData>({
+    } = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
     })
 
-    const onSubmit = async (data: LoginFormData) => {
+    const onSubmit = async (data: RegisterFormData) => {
         setIsLoading(true)
 
         try {
@@ -66,63 +78,93 @@ const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
 
     return (
         <>
-            <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-center">
-                    Register
-                </CardTitle>
-                <CardDescription className="text-center"></CardDescription>
+            <CardHeader className="text-center">
+                <CardTitle className="text-xl">Register</CardTitle>
+                <CardDescription>Create a new account</CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-4">
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="you@example.com"
-                            onError={() => console.log('error')}
-                            {...register('email')}
-                        />
-                        {errors.email && (
-                            <p className="text-sm text-red-500">
-                                {errors.email.message}
-                            </p>
-                        )}
-                    </div>
+            <CardContent>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <FieldGroup>
+                        <Field>
+                            <FieldLabel htmlFor="email">Email</FieldLabel>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="you@example.com"
+                                {...register('email')}
+                            />
+                            {errors.email && (
+                                <p className="text-sm text-red-500">
+                                    {errors.email.message}
+                                </p>
+                            )}
+                        </Field>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder="••••••••"
-                            {...register('password')}
-                        />
-                    </div>
+                        <Field>
+                            <FieldLabel htmlFor="password">Password</FieldLabel>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="••••••••"
+                                {...register('password')}
+                            />
+                            {errors.password && (
+                                <p className="text-sm text-red-500">
+                                    {errors.password.message}
+                                </p>
+                            )}
+                        </Field>
 
-                    <Button
-                        className="w-full"
-                        type="submit"
-                        disabled={isLoading}
-                    >
-                        {!isLoading ? 'Register' : 'Loading'}
-                        {isLoading && <Spinner />}
-                    </Button>
+                        <Field>
+                            <FieldLabel htmlFor="confirmPassword">
+                                Confirm Password
+                            </FieldLabel>
+                            <Input
+                                id="confirmPassword"
+                                type="password"
+                                placeholder="••••••••"
+                                {...register('confirmPassword')}
+                            />
+                            {errors.confirmPassword && (
+                                <p className="text-sm text-red-500">
+                                    {errors.confirmPassword.message}
+                                </p>
+                            )}
+                        </Field>
+
+                        <Field className="flex flex-row gap-2">
+                            <Button
+                                variant="outline"
+                                className="flex-1"
+                                type="button"
+                                onClick={() => setFlow('choosing')}
+                            >
+                                Go Back
+                            </Button>
+                            <Button
+                                className="flex-1"
+                                type="submit"
+                                disabled={isLoading}
+                            >
+                                {!isLoading ? 'Register' : 'Loading'}
+                                {isLoading && <Spinner />}
+                            </Button>
+                        </Field>
+
+                        <FieldDescription className="text-center">
+                            Already have an account?{' '}
+                            <a
+                                href="#"
+                                onClick={() => setFlow('login')}
+                                className="text-primary hover:underline"
+                            >
+                                Login
+                            </a>
+                        </FieldDescription>
+                    </FieldGroup>
                 </form>
             </CardContent>
-            <div className="h-4" />
-
-            <CardFooter className="flex flex-col space-y-3">
-                <p className="text-sm text-center text-muted-foreground">
-                    <a
-                        onClick={() => setFlow('choosing')}
-                        className="text-primary hover:underline hover:cursor-pointer"
-                    >
-                        Back to Login
-                    </a>
-                </p>
-            </CardFooter>
         </>
     )
 }

@@ -4,8 +4,12 @@ import { AnimatePresence, motion, easeInOut } from 'framer-motion'
 import RegisterFlow from './RegisterFlow'
 import LoginFlow from './LoginFlow'
 import ChoosingFlow from './ChoosingFlow'
+import ResetPasswordFlow from './ResetPassword'
+import { FieldDescription } from '@/components/ui/field'
 
-export type AuthFlow = 'choosing' | 'login' | 'register'
+import { GalleryVerticalEnd } from 'lucide-react'
+import { Card } from '@/components/ui/card'
+export type AuthFlow = 'choosing' | 'login' | 'register' | 'reset-password'
 
 const motionAnimation = {
     initial: {
@@ -32,27 +36,49 @@ const LoginPage = () => {
 
     return (
         <>
-            <div className="flex items-center justify-center min-h-screen px-4">
-                <div className="w-[288px]">
-                    <AnimatePresence mode="wait">
-                        {flow === 'choosing' && (
-                            <motion.div key="choosing" {...motionAnimation}>
-                                <ChoosingFlow setFlow={setFlow} />
-                            </motion.div>
-                        )}
+            <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+                <div className="flex w-full max-w-sm flex-col gap-6">
+                    <div className="flex items-center gap-2 self-center font-medium">
+                        <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+                            <GalleryVerticalEnd className="size-4" />
+                        </div>
+                        Spring Board
+                    </div>
+                    <Card>
+                        <AnimatePresence mode="wait">
+                            {flow === 'choosing' && (
+                                <motion.div key="choosing" {...motionAnimation}>
+                                    <ChoosingFlow setFlow={setFlow} />
+                                </motion.div>
+                            )}
 
-                        {flow == 'login' && (
-                            <motion.div key="login" {...motionAnimation}>
-                                <LoginFlow setFlow={setFlow} />
-                            </motion.div>
-                        )}
+                            {flow === 'login' && (
+                                <motion.div key="login" {...motionAnimation}>
+                                    <LoginFlow setFlow={setFlow} />
+                                </motion.div>
+                            )}
 
-                        {flow == 'register' && (
-                            <motion.div key="register" {...motionAnimation}>
-                                <RegisterFlow setFlow={setFlow} />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                            {flow === 'register' && (
+                                <motion.div key="register" {...motionAnimation}>
+                                    <RegisterFlow setFlow={setFlow} />
+                                </motion.div>
+                            )}
+
+                            {flow === 'reset-password' && (
+                                <motion.div
+                                    key="reset-password"
+                                    {...motionAnimation}
+                                >
+                                    <ResetPasswordFlow setFlow={setFlow} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </Card>
+                    <FieldDescription className="px-6 text-center">
+                        By clicking continue, you agree to our{' '}
+                        <a href="#">Terms of Service</a> and{' '}
+                        <a href="#">Privacy Policy</a>.
+                    </FieldDescription>
                 </div>
             </div>
         </>

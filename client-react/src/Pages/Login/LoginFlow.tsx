@@ -3,19 +3,10 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import {
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardContent,
-    CardFooter,
-} from '@/components/ui/card'
-
-import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+
 import { useAppDispatch } from '@/redux/hooks/hooks'
 import { useNavigate } from 'react-router'
 import { loginUser } from '@/redux/auth/authThunks'
@@ -23,6 +14,16 @@ import type { AuthFlow } from './LoginPage'
 import { getErrorMessage } from '@/utils/error'
 import { Spinner } from '@/components/ui/spinner'
 import { toast } from 'sonner'
+import { Eye, EyeOff } from 'lucide-react'
+
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
+
+import {
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+} from '@/components/ui/card'
 
 const loginSchema = z.object({
     email: z.email(),
@@ -33,6 +34,7 @@ type LoginFormData = z.infer<typeof loginSchema>
 
 const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [showPassword, setShowPassword] = useState<boolean>(false)
 
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
@@ -51,7 +53,7 @@ const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
             navigate('/dashboard')
         } catch (err: unknown) {
             toast.error(getErrorMessage(err) || 'Something went wrong', {
-                duration: Infinity,
+                duration: 6000,
                 closeButton: true,
             })
         } finally {
@@ -69,72 +71,94 @@ const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
 
     return (
         <>
-            <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-center">
-                    Welcome
-                </CardTitle>
-                <CardDescription className="text-center">
-                    Sign in to your account to continue
+            <CardHeader className="text-center">
+                <CardTitle className="text-xl">Login</CardTitle>
+                <CardDescription>
+                    Please enter your login details
                 </CardDescription>
             </CardHeader>
-            <div className="h-4" />
-
-            <CardContent className="space-y-4">
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="you@example.com"
-                            {...register('email')}
-                        />
-                        {errors.email && (
-                            <p className="text-sm text-red-500">
-                                {errors.email.message}
-                            </p>
-                        )}
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder="••••••••"
-                            {...register('password')}
-                        />
-                        {errors.password && (
-                            <p className="text-sm text-red-500">
-                                {errors.password.message}
-                            </p>
-                        )}
-                    </div>
-
-                    <Button
-                        className="w-full"
-                        type="submit"
-                        disabled={isLoading}
-                    >
-                        {!isLoading ? 'Sign in' : 'Loading'}
-                        {isLoading && <Spinner />}
-                    </Button>
+            <CardContent>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <FieldGroup>
+                        <Field>
+                            <FieldLabel htmlFor="email">Email</FieldLabel>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="m@example.com"
+                                {...register('email')}
+                            />
+                            {errors.email && (
+                                <p className="text-sm text-red-500">
+                                    {errors.email.message}
+                                </p>
+                            )}
+                        </Field>
+                        <Field>
+                            <div className="flex items-center">
+                                <FieldLabel htmlFor="password">
+                                    Password
+                                </FieldLabel>
+                            </div>
+                            <div className="relative">
+                                <Input
+                                    id="password"
+                                    type={showPassword ? 'text' : 'password'}
+                                    required
+                                    placeholder="Enter your password"
+                                    {...register('password')}
+                                />
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="size-4" />
+                                    ) : (
+                                        <Eye className="size-4" />
+                                    )}
+                                    <span className="sr-only">
+                                        {showPassword
+                                            ? 'Hide password'
+                                            : 'Show password'}
+                                    </span>
+                                </Button>
+                            </div>
+                            <a
+                                href="#"
+                                onClick={() => setFlow('reset-password')}
+                                className="ml-auto text-sm underline-offset-2 hover:underline cursor-pointer text-right"
+                            >
+                                Forgot your password?
+                            </a>
+                            {errors.password && (
+                                <p className="text-sm text-red-500">
+                                    {errors.password.message}
+                                </p>
+                            )}
+                        </Field>
+                        <Field className="flex flex-row gap-2">
+                            <Button
+                                variant="outline"
+                                className="flex-1"
+                                type="button"
+                                onClick={() => setFlow('choosing')}
+                            >
+                                Go Back
+                            </Button>
+                            <Button type="submit" className="flex-1">
+                                {isLoading && <Spinner />}{' '}
+                                {!isLoading ? 'Sign in' : 'Loading'}
+                            </Button>
+                        </Field>
+                    </FieldGroup>
                 </form>
             </CardContent>
-
-            <CardFooter className="flex flex-col space-y-3">
-                <Separator />
-
-                <p className="text-sm text-center text-muted-foreground">
-                    <button
-                        type="button"
-                        onClick={() => setFlow('choosing')}
-                        className="text-primary hover:underline hover:cursor-pointer"
-                    >
-                        Back to Login
-                    </button>
-                </p>
-            </CardFooter>
         </>
     )
 }
