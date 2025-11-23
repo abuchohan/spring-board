@@ -10,7 +10,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import type { AuthFlow } from './LoginPage'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
 import { useAppDispatch } from '@/redux/hooks/hooks'
@@ -23,6 +22,8 @@ import {
     FieldGroup,
     FieldLabel,
 } from '@/components/ui/field'
+import { useNavigate } from 'react-router-dom'
+import LoginWrapper from '@/components/LoginWrapper/LoginWrapper'
 
 const registerSchema = z
     .object({
@@ -39,9 +40,9 @@ const registerSchema = z
 
 type RegisterFormData = z.infer<typeof registerSchema>
 
-const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
+const RegisterPage = () => {
     const dispatch = useAppDispatch()
-
+    const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const {
@@ -65,7 +66,7 @@ const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                 closeButton: true,
                 duration: Infinity,
             })
-            setFlow('login')
+            navigate('/login')
         } catch (err: unknown) {
             toast.error(getErrorMessage(err) || 'Something went wrong', {
                 dismissible: true,
@@ -77,7 +78,7 @@ const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
     }
 
     return (
-        <>
+        <LoginWrapper>
             <CardHeader className="text-center">
                 <CardTitle className="text-xl">Register</CardTitle>
                 <CardDescription>Create a new account</CardDescription>
@@ -138,7 +139,7 @@ const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                                 variant="outline"
                                 className="flex-1"
                                 type="button"
-                                onClick={() => setFlow('choosing')}
+                                onClick={() => navigate('/login')}
                             >
                                 Go Back
                             </Button>
@@ -154,19 +155,18 @@ const RegisterFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
 
                         <FieldDescription className="text-center">
                             Already have an account?{' '}
-                            <a
-                                href="#"
-                                onClick={() => setFlow('login')}
-                                className="text-primary hover:underline"
+                            <Button
+                                variant="link"
+                                onClick={() => navigate('/login')}
                             >
                                 Login
-                            </a>
+                            </Button>
                         </FieldDescription>
                     </FieldGroup>
                 </form>
             </CardContent>
-        </>
+        </LoginWrapper>
     )
 }
 
-export default RegisterFlow
+export default RegisterPage

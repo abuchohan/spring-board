@@ -5,7 +5,6 @@ import {
     CardContent,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import type { AuthFlow } from './LoginPage'
 import { Field, FieldDescription, FieldGroup } from '@/components/ui/field'
 import {
     Tooltip,
@@ -14,10 +13,13 @@ import {
 } from '@/components/ui/tooltip'
 
 import { Mail } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import LoginWrapper from '@/components/LoginWrapper/LoginWrapper'
 
-const ChoosingFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
+const SignInOptions = () => {
+    const navigate = useNavigate()
     return (
-        <>
+        <LoginWrapper>
             <div className="flex flex-col gap-6">
                 <CardHeader className="text-center">
                     <CardTitle className="text-xl">
@@ -81,7 +83,7 @@ const ChoosingFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                                 <Button
                                     className="w-full justify-center"
                                     type="button"
-                                    onClick={() => setFlow('login')}
+                                    onClick={() => navigate('/login')}
                                 >
                                     <Mail />
                                     Sign in with Email
@@ -91,20 +93,20 @@ const ChoosingFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                             <Field>
                                 <FieldDescription className="text-center">
                                     Don&apos;t have an account?{' '}
-                                    <a
-                                        href="#"
-                                        onClick={() => setFlow('register')}
+                                    <Button
+                                        variant="link"
+                                        onClick={() => navigate('/register')}
                                     >
                                         Sign up
-                                    </a>
+                                    </Button>
                                 </FieldDescription>
                             </Field>
                         </FieldGroup>
                     </form>
                 </CardContent>
             </div>
-        </>
+        </LoginWrapper>
     )
 }
 
-export default ChoosingFlow
+export default SignInOptions

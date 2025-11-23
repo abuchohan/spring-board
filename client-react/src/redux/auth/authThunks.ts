@@ -109,7 +109,7 @@ export const logoutUser = createAsyncThunk(
 )
 
 // reset password
-export const ResetPassword = createAsyncThunk(
+export const resetPassword = createAsyncThunk(
     'auth/ResetPassword',
     async ({ email }: { email: string }, { rejectWithValue }) => {
         try {
@@ -160,7 +160,7 @@ export const validateResetToken = createAsyncThunk(
 )
 
 // reset password with token
-export const ResetPasswordToken = createAsyncThunk(
+export const resetPasswordWithToken = createAsyncThunk(
     'auth/ResetPasswordToken',
     async (
         { password, resetToken }: { password: string; resetToken?: string },

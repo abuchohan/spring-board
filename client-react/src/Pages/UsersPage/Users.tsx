@@ -1,5 +1,6 @@
 import { Spinner } from '@/components/ui/spinner'
 import { useEffect, useState } from 'react'
+import { PageWrapper } from '@/layouts/PageWrapper'
 
 const Users = () => {
     const [isLoading, setIsloading] = useState<boolean>(false)
@@ -27,7 +28,7 @@ const Users = () => {
     }, [])
 
     return (
-        <>
+        <PageWrapper title="Users">
             {isLoading ? (
                 <Spinner />
             ) : (
@@ -37,7 +38,7 @@ const Users = () => {
                     ))}
                 </div>
             )}
-        </>
+        </PageWrapper>
     )
 }
 

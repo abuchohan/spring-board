@@ -57,7 +57,7 @@ export default function LandingPage() {
                         </Button>
                         <Button
                             className="bg-white text-slate-950 hover:bg-slate-200"
-                            onClick={() => navigate('/login')}
+                            onClick={() => navigate('/sign-in-options')}
                         >
                             Get Started
                         </Button>
@@ -66,7 +66,7 @@ export default function LandingPage() {
             </nav>
 
             {/* Hero Section */}
-            <section className="relative z-10 pt-32 pb-20 md:pt-48 md:pb-32 px-6">
+            <section className="relativee z-10 pt-32 pb-20 md:pt-48 md:pb-32 px-6">
                 <div className="container mx-auto max-w-5xl text-center">
                     <motion.div
                         initial="initial"

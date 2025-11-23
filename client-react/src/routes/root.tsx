@@ -1,13 +1,18 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from '@/App'
-import LoginPage from '@/Pages/Login/LoginPage'
-import Dashboard from '@/Pages/Dashboard/Dashboard'
+import DashboardLayout from '@/layouts/DashboardLayout'
 import ProtectedRoute from '@/components/ProtectedRoute/ProtectedRoute'
 import PublicRoute from '@/components/PublicRoute/PublicRoute'
 import LandingPage from '@/Pages/LandingPage/LandingPage'
 import Users from '@/Pages/UsersPage/Users'
+import RegisterPage from '@/Pages/LoginFlow/RegisterPage/RegisterPage'
+import ResetPasswordPage from '@/Pages/LoginFlow/ResetPasswordPage/ResetPasswordPage'
 
-import ResetPasswordWithToken from '@/Pages/Login/ResetPasswordWithToken'
+import SignInOptions from '@/Pages/LoginFlow/SignInOptions/SignInOptions'
+import LoginPage from '@/Pages/LoginFlow/LoginPage/LoginPage'
+import ResetPasswordTokenPage from '@/Pages/LoginFlow/ResetPasswordTokenPage/ResetPasswordTokenPage'
+import DashboardPage from '@/Pages/Dashboard/DashboardPage'
+import NotFound from '@/Pages/NotFound/NotFound'
 
 export const router = createBrowserRouter([
     {
@@ -22,12 +27,24 @@ export const router = createBrowserRouter([
                 element: <PublicRoute />,
                 children: [
                     {
+                        path: '/sign-in-options',
+                        element: <SignInOptions />,
+                    },
+                    {
                         path: '/login',
                         element: <LoginPage />,
                     },
                     {
-                        path: '/reset-password/:resetToken',
-                        element: <ResetPasswordWithToken />,
+                        path: '/register',
+                        element: <RegisterPage />,
+                    },
+                    {
+                        path: '/forgot-password',
+                        element: <ResetPasswordPage />,
+                    },
+                    {
+                        path: '/forgot-password/:resetToken',
+                        element: <ResetPasswordTokenPage />,
                     },
                 ],
             },
@@ -37,11 +54,11 @@ export const router = createBrowserRouter([
                 children: [
                     {
                         path: '/dashboard',
-                        element: <Dashboard />,
+                        element: <DashboardLayout />,
                         children: [
                             {
                                 index: true,
-                                element: <h1>Welcome to your Dashboard</h1>,
+                                element: <DashboardPage />,
                             },
                             {
                                 path: 'users',
@@ -54,6 +71,10 @@ export const router = createBrowserRouter([
                         ],
                     },
                 ],
+            },
+            {
+                path: '*',
+                element: <NotFound />,
             },
         ],
     },

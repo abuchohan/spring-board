@@ -10,7 +10,6 @@ import { Input } from '@/components/ui/input'
 import { useAppDispatch } from '@/redux/hooks/hooks'
 import { useNavigate } from 'react-router'
 import { loginUser } from '@/redux/auth/authThunks'
-import type { AuthFlow } from './LoginPage'
 import { getErrorMessage } from '@/utils/error'
 import { Spinner } from '@/components/ui/spinner'
 import { toast } from 'sonner'
@@ -24,6 +23,7 @@ import {
     CardDescription,
     CardContent,
 } from '@/components/ui/card'
+import LoginWrapper from '@/components/LoginWrapper/LoginWrapper'
 
 const loginSchema = z.object({
     email: z.email(),
@@ -32,7 +32,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>
 
-const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
+const LoginPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [showPassword, setShowPassword] = useState<boolean>(false)
 
@@ -70,7 +70,7 @@ const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
     })
 
     return (
-        <>
+        <LoginWrapper>
             <CardHeader className="text-center">
                 <CardTitle className="text-xl">Login</CardTitle>
                 <CardDescription>
@@ -129,13 +129,13 @@ const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                                     </span>
                                 </Button>
                             </div>
-                            <a
-                                href="#"
-                                onClick={() => setFlow('reset-password')}
+                            <Button
+                                variant="link"
+                                onClick={() => navigate('/forgot-password')}
                                 className="ml-auto text-sm underline-offset-2 hover:underline cursor-pointer text-right"
                             >
                                 Forgot your password?
-                            </a>
+                            </Button>
                             {errors.password && (
                                 <p className="text-sm text-red-500">
                                     {errors.password.message}
@@ -147,7 +147,7 @@ const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                                 variant="outline"
                                 className="flex-1"
                                 type="button"
-                                onClick={() => setFlow('choosing')}
+                                onClick={() => navigate('/sign-in-options')}
                             >
                                 Go Back
                             </Button>
@@ -159,8 +159,8 @@ const LoginFlow = ({ setFlow }: { setFlow: (flow: AuthFlow) => void }) => {
                     </FieldGroup>
                 </form>
             </CardContent>
-        </>
+        </LoginWrapper>
     )
 }
 
-export default LoginFlow
+export default LoginPage

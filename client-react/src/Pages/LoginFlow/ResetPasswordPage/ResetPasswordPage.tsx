@@ -6,11 +6,11 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAppDispatch } from '@/redux/hooks/hooks'
-import { ResetPassword } from '@/redux/auth/authThunks'
-import type { AuthFlow } from './LoginPage'
+import { resetPassword } from '@/redux/auth/authThunks'
 import { getErrorMessage } from '@/utils/error'
 import { Spinner } from '@/components/ui/spinner'
 import { toast } from 'sonner'
+import { useNavigate } from 'react-router-dom'
 
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 
@@ -20,6 +20,7 @@ import {
     CardDescription,
     CardContent,
 } from '@/components/ui/card'
+import LoginWrapper from '@/components/LoginWrapper/LoginWrapper'
 
 const resetPasswordSchema = z.object({
     email: z.email({ message: 'Please enter a valid email address' }),
@@ -27,27 +28,24 @@ const resetPasswordSchema = z.object({
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
 
-const ResetPasswordFlow = ({
-    setFlow,
-}: {
-    setFlow: (flow: AuthFlow) => void
-}) => {
+const ResetPasswordPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
 
     const onSubmit = async (data: ResetPasswordFormData) => {
         setIsLoading(true)
 
         try {
-            await dispatch(ResetPassword({ email: data.email })).unwrap()
+            await dispatch(resetPassword({ email: data.email })).unwrap()
 
             toast.success('Reset link sent', {
                 description:
                     'Check your email for instructions to reset your password.',
                 duration: 5000,
             })
-            setFlow('login')
+            navigate('/login')
         } catch (err: unknown) {
             toast.error(getErrorMessage(err) || 'Something went wrong', {
                 duration: 6000,
@@ -67,7 +65,7 @@ const ResetPasswordFlow = ({
     })
 
     return (
-        <>
+        <LoginWrapper>
             <CardHeader className="text-center">
                 <CardTitle className="text-xl">Forgot Password</CardTitle>
                 <CardDescription>
@@ -96,7 +94,7 @@ const ResetPasswordFlow = ({
                                 variant="outline"
                                 className="flex-1"
                                 type="button"
-                                onClick={() => setFlow('login')}
+                                onClick={() => navigate('/login')}
                             >
                                 Back to Login
                             </Button>
@@ -113,8 +111,8 @@ const ResetPasswordFlow = ({
                     </FieldGroup>
                 </form>
             </CardContent>
-        </>
+        </LoginWrapper>
     )
 }
 
-export default ResetPasswordFlow
+export default ResetPasswordPage
