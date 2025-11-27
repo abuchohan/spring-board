@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 import { useAppDispatch } from '@/redux/hooks/hooks'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router-dom'
 import { loginUser } from '@/redux/auth/authThunks'
 import { getErrorMessage } from '@/utils/error'
 import { Spinner } from '@/components/ui/spinner'
@@ -129,13 +129,12 @@ const LoginPage = () => {
                                     </span>
                                 </Button>
                             </div>
-                            <Button
-                                variant="link"
-                                onClick={() => navigate('/forgot-password')}
+                            <Link
+                                to="/forgot-password"
                                 className="ml-auto text-sm underline-offset-2 hover:underline cursor-pointer text-right"
                             >
                                 Forgot your password?
-                            </Button>
+                            </Link>
                             {errors.password && (
                                 <p className="text-sm text-red-500">
                                     {errors.password.message}

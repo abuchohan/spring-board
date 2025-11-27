@@ -28,20 +28,18 @@ import { useNavigate } from 'react-router'
 import { useAppDispatch } from '@/redux/hooks/hooks'
 import { logoutUser } from '@/redux/auth/authThunks'
 import { toast } from 'sonner'
+import { useAppSelector } from '@/redux/hooks/hooks'
+import { authSelectors } from '@/redux/auth/selectors'
 
-export function NavUser({
-    user,
-}: {
-    user: {
-        name: string
-        email: string
-        avatar: string
-    }
-}) {
+export function NavUser() {
     const { isMobile } = useSidebar()
 
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
+
+    const user = useAppSelector(authSelectors.user)
+
+    console.log(user)
 
     const LogoutHandler = async () => {
         await dispatch(logoutUser())
@@ -66,8 +64,8 @@ export function NavUser({
                         >
                             <Avatar className="h-8 w-8 rounded-lg grayscale">
                                 <AvatarImage
-                                    src={user.avatar}
-                                    alt={user.name}
+                                    src={user!.avatar || ''}
+                                    alt={user!.name}
                                 />
                                 <AvatarFallback className="rounded-lg">
                                     CN
@@ -75,10 +73,10 @@ export function NavUser({
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">
-                                    {user.name}
+                                    {user!.name}
                                 </span>
                                 <span className="text-muted-foreground truncate text-xs">
-                                    {user.email}
+                                    {user!.email}
                                 </span>
                             </div>
                             <IconDotsVertical className="ml-auto size-4" />
@@ -94,19 +92,23 @@ export function NavUser({
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage
-                                        src={user.avatar}
-                                        alt={user.name}
+                                        src={user!.avatar || ''}
+                                        alt={user!.name}
                                     />
                                     <AvatarFallback className="rounded-lg">
-                                        CN
+                                        {(user?.name &&
+                                            user.name
+                                                .charAt(0)
+                                                .toUpperCase()) ||
+                                            'CN'}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-medium">
-                                        {user.name}
+                                        {user!.name}
                                     </span>
                                     <span className="text-muted-foreground truncate text-xs">
-                                        {user.email}
+                                        {user!.email}
                                     </span>
                                 </div>
                             </div>

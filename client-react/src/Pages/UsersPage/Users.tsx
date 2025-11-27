@@ -5,6 +5,7 @@ import { PageWrapper } from '@/layouts/PageWrapper'
 const Users = () => {
     const [isLoading, setIsloading] = useState<boolean>(false)
     const [users, setUsers] = useState([])
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -16,10 +17,9 @@ const Users = () => {
 
                 const data = await res.json()
                 setUsers(data)
-                console.log(data)
-                setIsloading(false)
             } catch (error) {
                 console.log(error)
+            } finally {
                 setIsloading(false)
             }
         }

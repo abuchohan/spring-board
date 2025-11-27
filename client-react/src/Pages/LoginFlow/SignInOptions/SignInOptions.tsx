@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/tooltip'
 
 import { Mail } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import LoginWrapper from '@/components/LoginWrapper/LoginWrapper'
 
 const SignInOptions = () => {
@@ -93,12 +93,12 @@ const SignInOptions = () => {
                             <Field>
                                 <FieldDescription className="text-center">
                                     Don&apos;t have an account?{' '}
-                                    <Button
-                                        variant="link"
-                                        onClick={() => navigate('/register')}
+                                    <Link
+                                        to="/register"
+                                        className="colored-link text-white dark:text-white"
                                     >
                                         Sign up
-                                    </Button>
+                                    </Link>
                                 </FieldDescription>
                             </Field>
                         </FieldGroup>

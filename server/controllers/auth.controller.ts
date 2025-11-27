@@ -2,6 +2,7 @@ import { type Request, type Response } from 'express'
 import prisma from '../prisma/client.js'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
+import nodemailer from 'nodemailer'
 
 const SALT_ROUNDS = 10
 
@@ -160,24 +161,65 @@ export async function resetPassword(req: Request, res: Response) {
 
         const token = crypto.randomBytes(32).toString('hex')
 
-        // !! I need more information on how to store a reset token.
-        // const hashedToken = await bcrypt.hash(token, SALT_ROUNDS)
+        const MAILTRAP_USER = process.env.MAILTRAP_USER
+        const MAILTRAP_PASS = process.env.MAILTRAP_PASS
+
+        if (!MAILTRAP_USER || !MAILTRAP_PASS) {
+            return res.status(500).json({
+                error: 'MAILTRAP credentials not set in environment variables',
+            })
+        }
+
+        const transport = nodemailer.createTransport({
+            host: 'sandbox.smtp.mailtrap.io',
+            port: 2525,
+            auth: {
+                user: MAILTRAP_USER,
+                pass: MAILTRAP_PASS,
+            },
+        })
+
+        const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/forgot-password/${token}`
+
+        try {
+            await transport.sendMail({
+                from: {
+                    address: 'noreply@demomailtrap.com',
+                    name: 'Prisma Express Client Template',
+                },
+                to: 'abuchohan@hotmail.co.uk', //! user.email, FOR TESTING PURPOSES
+                subject: 'Password Reset Request',
+                text: `You requested a password reset. Click this link to reset your password: ${resetLink}\n\nThis link expires in 15 minutes.\n\nIf you didn't request this, please ignore this email.`,
+                html: `
+                    <h2>Password Reset Request</h2>
+                    <p>You requested a password reset. Click the link below to reset your password:</p>
+                    <p><a href="${resetLink}">Reset Password</a></p>
+                    <p>This link expires in 15 minutes.</p>
+                    <p>If you didn't request this, please ignore this email.</p>
+                `,
+            })
+            console.log(`Password reset email sent to ${user.email}`)
+        } catch (error) {
+            console.error('Failed to send password reset email:', error)
+            return res.status(500).json({
+                error: 'Failed to send reset email',
+            })
+        }
 
         await prisma.passwordReset.create({
             data: {
                 expiresAt: expiresAt,
                 token: token,
                 userId: user.id,
+                used: false,
             },
         })
 
         return res.status(200).json({
-            token,
-            // add reset unhashed token here. with a message to say it's been emailed -> ONLY FOR TESTING PURPOSES
-            message: 'We have email you a password reset link',
+            message: 'We have emailed you a password reset link',
         })
     } catch (err) {
-        return res.status(500).json({ error: 'Internal Server Error' })
+        return res.status(500).json({ error: 'Internal Server Error', err })
     }
 }
 
@@ -216,8 +258,6 @@ export async function resetPasswordToken(req: Request, res: Response) {
     try {
         const { resetToken } = req.params
         const { password } = req.body
-
-        console.log(req.params)
 
         if (!resetToken) {
             return res
