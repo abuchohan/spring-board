@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc -b && vite build",
+        "check-types": "tsc --noEmit",
         "lint": "eslint .",
         "preview": "vite preview"
     },
@@ -33,6 +34,7 @@
         "react-router": "^7.9.5",
         "react-router-dom": "^7.9.5",
         "sonner": "^2.0.7",
+        "swr": "^2.3.7",
         "tailwind-merge": "^3.3.1",
         "tailwindcss": "^4.1.16",
         "zod": "^4.1.12"

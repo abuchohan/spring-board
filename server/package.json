@@ -5,7 +5,9 @@
     "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "tsx watch index.ts"
+        "dev": "tsx watch index.ts",
+        "build": "tsc",
+        "check-types": "tsc --noEmit"
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"
@@ -15,7 +17,7 @@
     "license": "ISC",
     "description": "",
     "dependencies": {
-        "@prisma/client": "^6.17.1",
+        "@prisma/client": "^6.19.0",
         "bcrypt": "^6.0.0",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",

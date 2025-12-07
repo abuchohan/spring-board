@@ -13,6 +13,7 @@ import LoginPage from '@/Pages/LoginFlow/LoginPage/LoginPage'
 import ResetPasswordTokenPage from '@/Pages/LoginFlow/ResetPasswordTokenPage/ResetPasswordTokenPage'
 import DashboardPage from '@/Pages/Dashboard/DashboardPage'
 import NotFound from '@/Pages/NotFound/NotFound'
+import TransactionsPage from '@/Pages/Transactions/TransactionsPage'
 
 export const router = createBrowserRouter([
     {
@@ -67,6 +68,10 @@ export const router = createBrowserRouter([
                             {
                                 path: 'profile',
                                 element: <h1>Profile Page</h1>,
+                            },
+                            {
+                                path: 'transactions',
+                                element: <TransactionsPage />,
                             },
                         ],
                     },

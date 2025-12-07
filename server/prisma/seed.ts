@@ -5,16 +5,20 @@ import bcrypt from 'bcrypt'
 
 async function main() {
     await prisma.user.upsert({
-        where: { email: 'test@example.com' },
+        where: { email: 'abuchohan@hotmail.co.uk' },
         update: {},
         create: {
-            email: 'test@example.com',
+            email: 'abuchohan@hotmail.co.uk',
             password: await bcrypt.hash('password123', 10),
+            name: 'Abu Chohan',
+            avatar: null,
         },
     })
 }
+
 main()
     .then(async () => {
+        console.log('Users have been seeded')
         await prisma.$disconnect()
     })
     .catch(async (e) => {

@@ -1,6 +1,5 @@
 import { NextFunction, type Request, type Response } from 'express'
 import prisma from '../prisma/client.js'
-import type { User } from '@prisma/client'
 
 export async function verifySession(
     req: Request,
@@ -19,8 +18,10 @@ export async function verifySession(
             include: {
                 user: {
                     select: {
-                        email: true,
                         id: true,
+                        email: true,
+                        name: true,
+                        avatar: true,
                     },
                 },
             },

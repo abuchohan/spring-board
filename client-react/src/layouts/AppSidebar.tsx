@@ -4,6 +4,7 @@ import * as React from 'react'
 import {
     IconDashboard,
     IconInnerShadowTop,
+    IconLasso,
     IconUsers,
 } from '@tabler/icons-react'
 
@@ -37,6 +38,11 @@ const data = {
             url: '/dashboard/users',
             icon: IconUsers,
         },
+        {
+            title: 'Transactions',
+            url: '/dashboard/transactions',
+            icon: IconLasso,
+        },
     ],
 }
 
@@ -48,10 +54,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             asChild
-                            className="data-[slot=sidebar-menu-button]:!p-1.5"
+                            className="data-[slot=sidebar-menu-button]:p-1.5!"
                         >
                             <a href="#">
-                                <IconInnerShadowTop className="!size-5" />
+                                <IconInnerShadowTop className="size-5" />
                                 <span className="text-base font-semibold">
                                     Spring Board
                                 </span>

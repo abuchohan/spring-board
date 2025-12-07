@@ -39,8 +39,6 @@ export function NavUser() {
 
     const user = useAppSelector(authSelectors.user)
 
-    console.log(user)
-
     const LogoutHandler = async () => {
         await dispatch(logoutUser())
 
@@ -68,7 +66,9 @@ export function NavUser() {
                                     alt={user!.name}
                                 />
                                 <AvatarFallback className="rounded-lg">
-                                    CN
+                                    {(user?.name &&
+                                        user.name.charAt(0).toUpperCase()) ||
+                                        'CN'}
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">

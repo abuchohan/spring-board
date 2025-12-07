@@ -68,6 +68,9 @@ export async function login(req: Request, res: Response) {
             },
         })
 
+        const { password: userPassword, createdAt, ...SafeUser } = user
+
+        // if there is no exisitng session make one
         if (!existingSession) {
             await prisma.session.create({
                 data: {
@@ -86,7 +89,7 @@ export async function login(req: Request, res: Response) {
 
             return res.status(200).json({
                 message: 'You have been logged in',
-                user: { id: user.id, email: user.email },
+                user: SafeUser,
                 sessionId: sessionId,
             })
         }
@@ -100,7 +103,7 @@ export async function login(req: Request, res: Response) {
 
         return res.status(200).json({
             message: 'You already have a session',
-            user: { id: user.id, email: user.email },
+            user: SafeUser,
             sessionId: existingSession.sessionId,
         })
     } catch (err) {
@@ -329,6 +332,12 @@ export async function me(req: Request, res: Response) {
     try {
         const { user, session } = req
 
+        if (!user || !session) {
+            return res.status(401).json({
+                message: 'Authentication required or Session expired.',
+            })
+        }
+
         // when this route is called refresh session for another 3 days
         const newExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
 
@@ -345,10 +354,7 @@ export async function me(req: Request, res: Response) {
         })
 
         res.status(200).json({
-            user: {
-                id: user?.id,
-                email: user?.email,
-            },
+            user: user,
             message: 'Your session token has been refreshed',
             session: {
                 oldSession: session!.expiresAt,

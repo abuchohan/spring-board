@@ -1,5 +1,4 @@
 import {
-    Card,
     CardHeader,
     CardTitle,
     CardDescription,
@@ -17,7 +16,7 @@ import { getErrorMessage } from '@/utils/error'
 import { toast } from 'sonner'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { useNavigate, useParams } from 'react-router-dom'
-import { GalleryVerticalEnd, Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import {
     resetPasswordWithToken,
     validateResetToken,
