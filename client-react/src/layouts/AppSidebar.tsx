@@ -6,6 +6,7 @@ import {
     IconInnerShadowTop,
     IconLasso,
     IconUsers,
+    IconBrandDeezer,
 } from '@tabler/icons-react'
 
 import { NavMain } from '@/layouts/SidebarMain'
@@ -42,6 +43,11 @@ const data = {
             title: 'Transactions',
             url: '/dashboard/transactions',
             icon: IconLasso,
+        },
+        {
+            title: 'Voice Tagging',
+            url: '/dashboard/voice-tagging',
+            icon: IconBrandDeezer,
         },
     ],
 }

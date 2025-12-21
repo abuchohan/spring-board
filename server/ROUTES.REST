@@ -60,7 +60,7 @@ Content-Type: application/json
 # --- me ---
 GET {{baseUrl}}/auth/me
 Content-Type: application/json
-Cookie: session_id=e767e237-81ba-4ea7-8078-88c324f46ae4
+Cookie: session_id=0657d326-ae46-4b75-b076-e1df2c69aff6
 
 ###
 
@@ -70,6 +70,24 @@ GET {{baseUrl}}/users
 Content-Type: application/json
 
 ###
+
+POST {{baseUrl}}/voice-notes/upload-url
+Content-Type: application/json
+Cookie: session_id=0657d326-ae46-4b75-b076-e1df2c69aff6
+
+{
+  "contentType": "audio/webm"
+}
+
+###
+
+GET {{baseUrl}}/voice-notes
+Content-Type: application/json
+Cookie: session_id=78b773a6-b2d7-4d4e-9c39-8960e66af61a
+
+{
+  "contentType": "audio/webm"
+}
 
 
 

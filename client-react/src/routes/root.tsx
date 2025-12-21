@@ -14,6 +14,7 @@ import ResetPasswordTokenPage from '@/Pages/LoginFlow/ResetPasswordTokenPage/Res
 import DashboardPage from '@/Pages/Dashboard/DashboardPage'
 import NotFound from '@/Pages/NotFound/NotFound'
 import TransactionsPage from '@/Pages/Transactions/TransactionsPage'
+import VoiceTaggingPage from '@/Pages/VoiceTaggingPage/VoiceTaggingPage'
 
 export const router = createBrowserRouter([
     {
@@ -72,6 +73,10 @@ export const router = createBrowserRouter([
                             {
                                 path: 'transactions',
                                 element: <TransactionsPage />,
+                            },
+                            {
+                                path: 'voice-tagging',
+                                element: <VoiceTaggingPage />,
                             },
                         ],
                     },
