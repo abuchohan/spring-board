@@ -4,10 +4,9 @@
     "module": "nodenext",
     "target": "esnext",
     "lib": ["esnext"],
-    "types": ["node"],
+    "types": ["node", "express"],
     "sourceMap": true,
     "declaration": true,
-    "baseUrl": ".",
     "declarationMap": true,
     "outDir": "dist",
 
