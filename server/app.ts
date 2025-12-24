@@ -5,9 +5,6 @@ import cookieParser from "cookie-parser";
 
 export const app = express();
 
-/**
- * !! REMOVE FOR PROD
- */
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
