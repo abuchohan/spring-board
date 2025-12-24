@@ -120,7 +120,8 @@ export async function logout(req: Request, res: Response) {
     res.clearCookie("session_id", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      // sameSite: "lax", // ADD BACK IN WHEN DOMAIN IS SET UP
+      sameSite: "none",
     });
 
     res.status(200).json({ message: "you have been logged out" });
