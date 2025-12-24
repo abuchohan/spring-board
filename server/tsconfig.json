@@ -1,14 +1,13 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     "module": "nodenext",
     "target": "esnext",
     "lib": ["esnext"],
-    "types": ["node"],
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
     "outDir": "dist",
+    "esModuleInterop": true, // Add this for bcrypt/cors compatibility
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
@@ -20,5 +19,7 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true
-  }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
