@@ -11,11 +11,13 @@ const Users = () => {
   return (
     <PageWrapper title="Users">
       {isLoading && <Spinner />}
-      <div>
-        {data?.map((user: { email: string; id: string }) => (
-          <h1 key={user.id}>{user.email}</h1>
-        ))}
-      </div>
+      {data && (
+        <div>
+          {data?.map((user: { email: string; id: string }) => (
+            <h1 key={user.id}>{user.email}</h1>
+          ))}
+        </div>
+      )}
     </PageWrapper>
   );
 };

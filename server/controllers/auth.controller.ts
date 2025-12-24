@@ -79,7 +79,8 @@ export async function login(req: Request, res: Response) {
       res.cookie("session_id", sessionId, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        // sameSite: "lax", // ADD BACK IN WHEN DOMAIN IS SET UP
+        sameSite: "none",
         expires: expiresAt,
       });
 
@@ -93,7 +94,8 @@ export async function login(req: Request, res: Response) {
     res.cookie("session_id", existingSession.sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      // sameSite: "lax", // ADD BACK IN WHEN DOMAIN IS SET UP
+      sameSite: "none",
       expires: existingSession.expiresAt,
     });
 
