@@ -21,6 +21,5 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true
-  },
-  "include": ["src", "src/types/**/*.d.ts"]
+  }
 }
