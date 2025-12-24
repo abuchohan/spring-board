@@ -1,24 +1,25 @@
 {
-    "name": "prisma-express-client-template",
-    "version": "0.1.0",
-    "description": "template for project",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "turbo run dev",
-        "build": "turbo run build",
-        "check-types": "turbo run check-types"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {},
-    "devDependencies": {
-        "prettier": "3.6.2",
-        "turbo": "^2.6.3"
-    },
-    "workspaces": [
-        "server",
-        "client-react"
-    ],
-    "packageManager": "npm@10.9.0"
+  "name": "prisma-express-client-template",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "template for project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "check-types": "turbo run check-types"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "prettier": "3.6.2",
+    "turbo": "^2.6.3"
+  },
+  "workspaces": [
+    "server",
+    "client-react"
+  ],
+  "packageManager": "pnpm@10.0.0"
 }

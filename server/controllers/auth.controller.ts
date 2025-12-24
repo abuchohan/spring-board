@@ -79,7 +79,8 @@ export async function login(req: Request, res: Response) {
       res.cookie("session_id", sessionId, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        // sameSite: "lax", // ADD BACK IN WHEN DOMAIN IS SET UP
+        sameSite: "none",
         expires: expiresAt,
       });
 
@@ -93,7 +94,8 @@ export async function login(req: Request, res: Response) {
     res.cookie("session_id", existingSession.sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      // sameSite: "lax", // ADD BACK IN WHEN DOMAIN IS SET UP
+      sameSite: "none",
       expires: existingSession.expiresAt,
     });
 
@@ -118,7 +120,8 @@ export async function logout(req: Request, res: Response) {
     res.clearCookie("session_id", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      // sameSite: "lax", // ADD BACK IN WHEN DOMAIN IS SET UP
+      sameSite: "none",
     });
 
     res.status(200).json({ message: "you have been logged out" });
@@ -178,7 +181,7 @@ export async function resetPassword(req: Request, res: Response) {
       },
     });
 
-    const resetLink = `${process.env.FRONTEND_URL || "http://localhost:3000"}/forgot-password/${token}`;
+    const resetLink = `${process.env.FRONTEND_URL}/forgot-password/${token}`;
 
     try {
       await transport.sendMail({
@@ -186,7 +189,7 @@ export async function resetPassword(req: Request, res: Response) {
           address: "noreply@demomailtrap.com",
           name: "Prisma Express Client Template",
         },
-        to: "abuchohan@hotmail.co.uk", //! user.email, FOR TESTING PURPOSES
+        to: user.email,
         subject: "Password Reset Request",
         text: `You requested a password reset. Click this link to reset your password: ${resetLink}\n\nThis link expires in 15 minutes.\n\nIf you didn't request this, please ignore this email.`,
         html: `

@@ -1,15 +1,29 @@
 {
-    "$schema": "https://turborepo.com/schema.json",
-    "tasks": {
-        "build": {
-            "outputs": ["dist/**"]
-        },
-        "check-types": {
-            "dependsOn": ["^check-types"]
-        },
-        "dev": {
-            "persistent": true,
-            "cache": false
-        }
+  "$schema": "https://turborepo.com/schema.json",
+  "tasks": {
+    "build": {
+      "outputs": ["dist/**"],
+      "env": [
+        "DATABASE_URL",
+        "NODE_ENV",
+        "MAILTRAP_USER",
+        "MAILTRAP_PASS",
+        "FROM_EMAIL",
+        "FRONTEND_URL",
+        "AWS_REGION",
+        "AWS_S3_BUCKET",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "OPENAI_API_KEY",
+        "SERVER_URL"
+      ]
+    },
+    "check-types": {
+      "dependsOn": ["^check-types"]
+    },
+    "dev": {
+      "persistent": true,
+      "cache": false
     }
+  }
 }

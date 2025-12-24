@@ -1,26 +1,14 @@
 {
-    // Visit https://aka.ms/tsconfig to read more about this file
-    "compilerOptions": {
-        "module": "nodenext",
-        "target": "esnext",
-        "lib": ["esnext"],
-        "types": ["node"],
-        "sourceMap": true,
-        "declaration": true,
-        "declarationMap": true,
-        "outDir": "dist",
-
-        // Stricter Typechecking Options
-        "noUncheckedIndexedAccess": true,
-        "exactOptionalPropertyTypes": true,
-
-        // Recommended Options
-        "strict": true,
-        "jsx": "react-jsx",
-        "isolatedModules": true,
-        "noUncheckedSideEffectImports": true,
-        "moduleDetection": "force",
-        "skipLibCheck": true,
-        "allowImportingTsExtensions": true
-    }
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "outDir": "dist",
+    "sourceMap": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
