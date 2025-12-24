@@ -16,6 +16,7 @@ model User {
   name          String?
   Session       Session[]
   PasswordReset PasswordReset[]
+  VoiceNote     VoiceNote[]
 
   @@map("users")
 }
@@ -37,4 +38,26 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
+}
+
+
+model VoiceNote {
+  id            String   @id @default(cuid())
+  userId        String
+  storagePath   String
+  status        VoiceNoteStatus @default(PENDING)
+  transcript    String?
+  aiResult      Json?
+  createdAt     DateTime        @default(now())
+  title         String?         // AI-generated, editable later
+  tags          String[]        // extracted keywords
+  actions       Json?           // AI-suggested tasks (array)  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id])
+}
+
+enum VoiceNoteStatus {
+  PENDING      // uploaded, waiting for AI
+  PROCESSING   // AI job running
+  DONE         // result ready
+  FAILED
 }

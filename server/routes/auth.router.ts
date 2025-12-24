@@ -20,5 +20,3 @@ authRouter.post('/reset-password/:resetToken', resetPasswordToken)
 
 authRouter.post('/logout', verifySession, logout)
 authRouter.get('/me', verifySession, me)
-
-export default authRouter
