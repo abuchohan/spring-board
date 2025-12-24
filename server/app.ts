@@ -1,22 +1,22 @@
-import express from 'express'
-import router from './routes/index.js'
-import cors from 'cors'
-import cookieParser from 'cookie-parser'
+import express from "express";
+import router from "./routes/index.js";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
-export const app = express()
+export const app = express();
 
 /**
  * !! REMOVE FOR PROD
  */
 app.use(
-    cors({
-        origin: 'http://localhost:5173',
-        credentials: true,
-    })
-)
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
 
-app.use(express.json())
-app.use(cookieParser())
-app.use('/api', router)
+app.use(express.json());
+app.use(cookieParser());
+app.use("/api", router);
 
-export default app
+export default app;
