@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 
 const openai = new OpenAI();
-export async function transcribeAudio(buffer: Buffer): Promise<string> {
+export async function transcribeAudio(buffer: BlobPart): Promise<string> {
   const file = new File([buffer], "audio.webm", {
     type: "audio/webm",
   });

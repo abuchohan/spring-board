@@ -9,7 +9,7 @@ const s3 = new S3Client({
   region: process.env.AWS_REGION || "eu-north-1",
 });
 
-async function downloadFromS3(key: string): Promise<Buffer> {
+async function downloadFromS3(key: string): Promise<BlobPart> {
   const obj = await s3.send(
     new GetObjectCommand({
       Bucket: process.env.AWS_S3_BUCKET!,
@@ -63,7 +63,6 @@ export async function processVoiceNoteAI(voiceNoteId: string) {
       where: { id: voiceNoteId },
       data: {
         status: "FAILED",
-        error: error.message ?? "AI processing failed",
       },
     });
   }
