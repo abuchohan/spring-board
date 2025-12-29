@@ -1,10 +1,17 @@
-import { type Request, type Response } from "express";
+import { CookieOptions, type Request, type Response } from "express";
 import prisma from "../prisma/client.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import { MailtrapTransport } from "mailtrap";
 
 const SALT_ROUNDS = 10;
+
+const cookie_settings: CookieOptions = {
+  secure: process.env.NODE_ENV === "production",
+  // sameSite: "lax", // ADD BACK IN WHEN DOMAIN IS SET UP
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+};
 
 export async function register(req: Request, res: Response) {
   try {
@@ -22,7 +29,6 @@ export async function register(req: Request, res: Response) {
         .json({ error: "This Email is already being used" });
     }
 
-    // !! Add some validation to the password. Also use this logic in password reset
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
     const user = await prisma.user.create({
@@ -78,10 +84,8 @@ export async function login(req: Request, res: Response) {
 
       res.cookie("session_id", sessionId, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        // sameSite: "lax", // ADD BACK IN WHEN DOMAIN IS SET UP
-        sameSite: "none",
         expires: expiresAt,
+        ...cookie_settings,
       });
 
       return res.status(200).json({
@@ -93,10 +97,8 @@ export async function login(req: Request, res: Response) {
 
     res.cookie("session_id", existingSession.sessionId, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      // sameSite: "lax", // ADD BACK IN WHEN DOMAIN IS SET UP
-      sameSite: "none",
       expires: existingSession.expiresAt,
+      ...cookie_settings,
     });
 
     return res.status(200).json({
@@ -119,9 +121,7 @@ export async function logout(req: Request, res: Response) {
 
     res.clearCookie("session_id", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      // sameSite: "lax", // ADD BACK IN WHEN DOMAIN IS SET UP
-      sameSite: "none",
+      ...cookie_settings,
     });
 
     res.status(200).json({ message: "you have been logged out" });
@@ -172,22 +172,28 @@ export async function resetPassword(req: Request, res: Response) {
       });
     }
 
-    const transport = nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
-      port: 2525,
-      auth: {
-        user: MAILTRAP_USER,
-        pass: MAILTRAP_PASS,
-      },
-    });
+    // const transport = nodemailer.createTransport({
+    //   host: "sandbox.smtp.mailtrap.io",
+    //   port: 2525,
+    //   auth: {
+    //     user: MAILTRAP_USER,
+    //     pass: MAILTRAP_PASS,
+    //   },
+    // });
+
+    const transport = nodemailer.createTransport(
+      MailtrapTransport({
+        token: process.env.MAILTRAP_TOKEN!,
+      })
+    );
 
     const resetLink = `${process.env.FRONTEND_URL}/forgot-password/${token}`;
 
     try {
       await transport.sendMail({
         from: {
-          address: "noreply@demomailtrap.com",
-          name: "Prisma Express Client Template",
+          address: "hello@demomailtrap.co",
+          name: "Mailtrap Test",
         },
         to: user.email,
         subject: "Password Reset Request",
