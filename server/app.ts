@@ -5,15 +5,9 @@ import cookieParser from "cookie-parser";
 
 export const app = express();
 
-
-const corsOptions = {
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-}
-
 app.use(
   cors({
-    origin: true,
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 );
