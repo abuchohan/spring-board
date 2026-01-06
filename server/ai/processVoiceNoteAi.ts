@@ -1,4 +1,3 @@
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import prisma from "../prisma/client.ts";
 import { analyseTranscript } from "./analyse.ts";
 import { transcribeAudio } from "./transcribe.ts";
