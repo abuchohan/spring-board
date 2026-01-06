@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import {OpenAI} from "openai";
 
 const openai = new OpenAI();
 export async function transcribeAudio(buffer: BlobPart): Promise<string> {
