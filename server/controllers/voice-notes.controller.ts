@@ -8,9 +8,9 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { type Request, type Response } from "express";
-import prisma from "../prisma/client.ts";
+import prisma from "../prisma/client.js";
 import { error } from "console";
-import { createVoiceNote } from "../service/voice.service.ts";
+import { createVoiceNote } from "../service/voice.service.js";
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION || "eu-north-1",

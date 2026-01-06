@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { usersRouter } from './users.router.ts'
-import { authRouter } from './auth.router.ts'
-import { voiceNotesRouter } from './voice-notes.router.ts'
-import { verifySession } from '../middleware/verifySession.middleware.ts'
+import { usersRouter } from './users.router.js'
+import { authRouter } from './auth.router.js'
+import { voiceNotesRouter } from './voice-notes.router.js'
+import { verifySession } from '../middleware/verifySession.middleware.js'
 
 const router = Router()
 

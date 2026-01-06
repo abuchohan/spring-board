@@ -5,7 +5,7 @@ import {
   getUserVoiceNotes,
   getPlaybackUrl,
   deleteVoiceNote,
-} from "../controllers/voice-notes.controller.ts";
+} from "../controllers/voice-notes.controller.js";
 
 export const voiceNotesRouter = Router();
 

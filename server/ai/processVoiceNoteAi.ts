@@ -1,6 +1,6 @@
-import prisma from "../prisma/client.ts";
-import { analyseTranscript } from "./analyse.ts";
-import { transcribeAudio } from "./transcribe.ts";
+import prisma from "../prisma/client.js"
+import { analyseTranscript } from "./analyse.js";
+import { transcribeAudio } from "./transcribe.js";
 
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
