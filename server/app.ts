@@ -13,8 +13,8 @@ const corsOptions = {
 
 app.use(
   cors({
-    origin: "*",
-    credentials: false,
+    origin: true,
+    credentials: true,
   })
 );
 
