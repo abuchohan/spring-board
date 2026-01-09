@@ -8,9 +8,9 @@ import { MailtrapTransport } from "mailtrap";
 const SALT_ROUNDS = 10;
 
 const cookie_settings: CookieOptions = {
+  httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  // sameSite: "lax", // ADD BACK IN WHEN DOMAIN IS SET UP
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  sameSite: 'none', // set to none as different endpoint for server
 };
 
 export async function register(req: Request, res: Response) {
@@ -83,7 +83,6 @@ export async function login(req: Request, res: Response) {
       });
 
       res.cookie("session_id", sessionId, {
-        httpOnly: true,
         expires: expiresAt,
         ...cookie_settings,
       });
@@ -96,7 +95,6 @@ export async function login(req: Request, res: Response) {
     }
 
     res.cookie("session_id", existingSession.sessionId, {
-      httpOnly: true,
       expires: existingSession.expiresAt,
       ...cookie_settings,
     });
@@ -120,7 +118,6 @@ export async function logout(req: Request, res: Response) {
     });
 
     res.clearCookie("session_id", {
-      httpOnly: true,
       ...cookie_settings,
     });
 
