@@ -7,6 +7,7 @@ import { MailtrapTransport } from "mailtrap";
 
 const SALT_ROUNDS = 10;
 
+// cookies not working for preview branch
 const cookie_settings: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
