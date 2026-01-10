@@ -9,6 +9,8 @@ import { PageWrapper } from "@/layouts/PageWrapper";
 import { IconChevronDown, IconDownload, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import useSWR, { mutate } from "swr";
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 type AiAction = {
   title: string;
@@ -54,7 +56,7 @@ const VoiceTaggingPage = () => {
   >({});
 
   const { data, isLoading } = useSWR<VoiceNote[]>(
-    "http://localhost:5000/api/voice-notes/",
+    `${API_URL}/voice-notes/`,
     (url: string) =>
       fetch(url, { credentials: "include" }).then((res) => res.json())
   );
@@ -63,7 +65,7 @@ const VoiceTaggingPage = () => {
 
   const handleUploadClick = async (blob: Blob) => {
     const res = await fetch(
-      "http://localhost:5000/api/voice-notes/upload-url",
+      `${API_URL}/voice-notes/upload-url`,
       {
         credentials: "include",
         method: "POST",
@@ -92,7 +94,7 @@ const VoiceTaggingPage = () => {
       throw new Error("S3 upload failed");
     }
 
-    const metaRes = await fetch("http://localhost:5000/api/voice-notes", {
+    const metaRes = await fetch(`${API_URL}/voice-notes`, {
       credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -104,7 +106,7 @@ const VoiceTaggingPage = () => {
     if (!metaRes.ok) {
       throw new Error("Failed to save voice note metadata");
     }
-    mutate("http://localhost:5000/api/voice-notes/");
+    mutate(`${API_URL}voice-notes/`);
   };
 
   const handleUploadSuccess = async () => {
@@ -118,7 +120,7 @@ const VoiceTaggingPage = () => {
   const handleOnPlay = async (id: string) => {
     setPlaybackLoading((prev) => ({ ...prev, [id]: true }));
     const res = await fetch(
-      `http://localhost:5000/api/voice-notes/${id}/playback-url`,
+      `${API_URL}/voice-notes/${id}/playback-url`,
       {
         credentials: "include",
         method: "POST",
@@ -149,7 +151,7 @@ const VoiceTaggingPage = () => {
 
   const handleDeleteAudio = async (id: string) => {
     const res = await fetch(
-      `http://localhost:5000/api/voice-notes/${id}/delete`,
+      `${API_URL}/voice-notes/${id}/delete`,
       {
         credentials: "include",
         method: "POST",
@@ -166,7 +168,7 @@ const VoiceTaggingPage = () => {
       return rest;
     });
 
-    mutate("http://localhost:5000/api/voice-notes/");
+    mutate(`${API_URL}/voice-notes/`);
   };
 
   const toggleTranscript = (id: string) => {
