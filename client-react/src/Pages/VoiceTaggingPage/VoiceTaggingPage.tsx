@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import useSWR, { mutate } from "swr";
 const API_URL = import.meta.env.VITE_API_URL;
 
-
 type AiAction = {
   title: string;
   dueDate?: string;
@@ -64,17 +63,14 @@ const VoiceTaggingPage = () => {
   const voiceNotes = data ?? [];
 
   const handleUploadClick = async (blob: Blob) => {
-    const res = await fetch(
-      `${API_URL}/voice-notes/upload-url`,
-      {
-        credentials: "include",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contentType: blob.type,
-        }),
-      }
-    );
+    const res = await fetch(`${API_URL}/voice-notes/upload-url`, {
+      credentials: "include",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contentType: blob.type,
+      }),
+    });
 
     if (!res.ok) {
       throw new Error("Failed to get upload URL");
@@ -119,14 +115,11 @@ const VoiceTaggingPage = () => {
 
   const handleOnPlay = async (id: string) => {
     setPlaybackLoading((prev) => ({ ...prev, [id]: true }));
-    const res = await fetch(
-      `${API_URL}/voice-notes/${id}/playback-url`,
-      {
-        credentials: "include",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    const res = await fetch(`${API_URL}/voice-notes/${id}/playback-url`, {
+      credentials: "include",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
 
     if (!res.ok) {
       setPlaybackLoading((prev) => {
@@ -150,14 +143,11 @@ const VoiceTaggingPage = () => {
   };
 
   const handleDeleteAudio = async (id: string) => {
-    const res = await fetch(
-      `${API_URL}/voice-notes/${id}/delete`,
-      {
-        credentials: "include",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    const res = await fetch(`${API_URL}/voice-notes/${id}/delete`, {
+      credentials: "include",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
 
     if (!res.ok) {
       throw new Error("Failed to delete");

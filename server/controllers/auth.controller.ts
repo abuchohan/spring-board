@@ -10,8 +10,9 @@ const SALT_ROUNDS = 10;
 // cookies not working for preview branch
 const cookie_settings: CookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: 'none', // set to none as different endpoint for server
+  //   secure: process.env.NODE_ENV === "production",
+  secure: true,
+  sameSite: "none", // set to none as different endpoint for server
 };
 
 export async function register(req: Request, res: Response) {
