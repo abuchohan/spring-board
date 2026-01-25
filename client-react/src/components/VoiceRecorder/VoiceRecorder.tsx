@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 import {
   IconMicrophone,
@@ -94,25 +95,6 @@ export const VoiceRecorder = ({
       }
     };
 
-    // Create onstop event handler
-    recorder.onstop = () => {
-      const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-      const url = URL.createObjectURL(blob);
-      setAudio({ url, blob });
-      if (onRecorded) onRecorded(blob);
-
-      // Cleanup visualizer
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
-      }
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-        audioContextRef.current = null;
-      }
-      setWaveform(new Array(20).fill(0));
-    };
-
     // Start recording
     recorder.start();
     setIsRecording(true);
@@ -120,13 +102,38 @@ export const VoiceRecorder = ({
 
   const stopRecording = () => {
     const recorder = mediaRecorderRef.current;
-    if (!recorder) return;
+    if (!recorder) return Promise.resolve(null);
 
-    if (recorder.state === "recording") {
-      recorder.stop();
-    }
+    return new Promise<Blob | null>((resolve) => {
+      const handleStop = () => {
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const url = URL.createObjectURL(blob);
+        setAudio({ url, blob });
+        if (onRecorded) onRecorded(blob);
 
-    setIsRecording(false);
+        // Cleanup visualizer
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+          animationFrameRef.current = null;
+        }
+        if (audioContextRef.current) {
+          audioContextRef.current.close();
+          audioContextRef.current = null;
+        }
+        setWaveform(new Array(20).fill(0));
+        setIsRecording(false);
+        resolve(blob);
+      };
+
+      recorder.addEventListener("stop", handleStop, { once: true });
+
+      if (recorder.state === "recording") {
+        recorder.stop();
+      } else {
+        recorder.removeEventListener("stop", handleStop);
+        resolve(null);
+      }
+    });
   };
 
   const onRecordHandler = () => {
@@ -139,12 +146,19 @@ export const VoiceRecorder = ({
     setCounter(0);
   };
 
-  const handleUpload = async () => {
-    if (!audio?.blob) return;
+  const handleStopAndUpload = async () => {
+    const blob = await stopRecording();
+    await handleUpload(blob);
+  };
+
+  const handleUpload = async (blobOverride?: Blob | null) => {
+    const blobToUpload = blobOverride ?? audio?.blob;
+
+    if (!blobToUpload) return;
 
     setIsUploading(true);
     try {
-      await onUploadClick(audio.blob); // parent does actual upload
+      await onUploadClick(blobToUpload); // parent does actual upload
       onUploadSuccess(); // parent tells us success
       setAudio(null); // clear blob
       setCounter(0);
@@ -155,63 +169,65 @@ export const VoiceRecorder = ({
     }
   };
 
-  return (
-    <div className="flex flex-col justify-center gap-4 align-center">
-      {audio && (
-        <audio controls>
-          <source src={audio.url} type="audio/webm" />
-        </audio>
-      )}
-      <div className="flex justify-center gap-4">
-        <Button
-          onClick={onDiscardClick}
-          variant="outline"
-          aria-label="Delete recording"
-        >
-          <IconTrash />
-        </Button>
-
-        <div className="gap-2">
-          <div className="h-9 flex justify-center items-center gap-1 px-2 rounded-md min-w-[200px]">
-            {waveform.map((value, index) => (
-              <div
-                key={index}
-                className="w-2 bg-primary transition-all duration-75 rounded-full"
-                style={{
-                  height: `${Math.max((value / 255) * 100, 10)}%`,
-                  opacity: Math.max(value / 255, 0.2),
-                }}
-              />
-            ))}
-          </div>
+  const overlay = isRecording ? (
+    <div className="fixed inset-0 z-40 pointer-events-auto">
+      <div className="absolute inset-0 bg-background/40 backdrop-blur-sm" />
+      <div className="relative z-10 flex h-full flex-col items-center justify-center gap-3 pb-24">
+        <div className="rounded-full border border-default/40 bg-default/10 px-4 py-1.5 text-sm font-medium flex items-center">
+          <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-destructive" />
+          {formatTime(counter)}
         </div>
-        <div>{formatTime(counter)}</div>
+        <div className="h-16 flex justify-center items-center gap-1.5 px-3 rounded-md min-w-50">
+          {waveform.map((value, index) => (
+            <div
+              key={index}
+              className="w-1 bg-primary transition-all duration-75 rounded-full"
+              style={{
+                height: `${Math.max((value / 255) * 100, 10)}%`,
+                opacity: Math.max(value / 255, 0.2),
+              }}
+            />
+          ))}
+        </div>
+        {/* NON MVP: Add realtime transcript here so we can skip the API step */}
 
-        <Button
-          onClick={handleUpload}
-          variant="outline"
-          aria-label="Upload recording"
-          disabled={isUploading || !audio}
-        >
-          {isUploading ? <Spinner /> : <IconUpload />}
-        </Button>
-      </div>
-      <div className="flex justify-center">
-        <Button
-          type="button"
-          variant={isRecording ? "destructive" : "outline"}
-          aria-label="Record a voice note"
-          onClick={onRecordHandler}
-        >
-          {isRecording ? (
-            <>
-              <IconSquareFilled />
-            </>
-          ) : (
-            <IconMicrophone />
-          )}
-        </Button>
+        <div>Transcription of audio here</div>
       </div>
     </div>
+  ) : null;
+
+  return (
+    <>
+      {typeof document !== "undefined" && overlay
+        ? createPortal(overlay, document.body)
+        : null}
+
+      <div className="flex flex-col justify-center gap-4 align-center">
+        <div className="flex justify-center">
+          {!isRecording ? (
+            <Button
+              type="button"
+              variant="outline"
+              aria-label="Record a voice note"
+              onClick={onRecordHandler}
+              disabled={isUploading}
+              className="h-14 w-14 rounded-full p-0"
+            >
+              {isUploading ? <Spinner /> : <IconMicrophone />}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant={"destructive"}
+              aria-label="Stop and upload"
+              onClick={handleStopAndUpload}
+              className="h-14 w-14 rounded-full p-0"
+            >
+              <IconSquareFilled />
+            </Button>
+          )}
+        </div>
+      </div>
+    </>
   );
 };
