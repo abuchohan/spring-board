@@ -14,7 +14,7 @@ export async function verifySession(
         }
 
         const currentSession = await prisma.session.findUnique({
-            where: { sessionId: sessionId },
+            where: { id: sessionId },
             include: {
                 user: {
                     select: {
@@ -25,14 +25,11 @@ export async function verifySession(
                     },
                 },
             },
-
-            // ?? Something about this fetch feels off. I don't to be able to have the password in the request.
-            // there is no type saftey if the res has got the password. Maybe something to look into
         })
 
         if (!currentSession) {
             return res
-                .status(404)
+                .status(401)
                 .json({ message: 'You do not have an active session' })
         }
 
@@ -41,6 +38,7 @@ export async function verifySession(
 
         next()
     } catch (err) {
-        res.status(500).json({ error: err })
+        console.error('verifySession error:', err)
+        res.status(500).json({ error: 'Internal server error' })
     }
 }

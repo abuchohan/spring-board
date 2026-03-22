@@ -1,18 +1,14 @@
 'use client'
 
 import {
-    IconCreditCard,
     IconDotsVertical,
     IconLogout,
-    IconNotification,
-    IconUserCircle,
 } from '@tabler/icons-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
@@ -40,15 +36,14 @@ export function NavUser() {
     const user = useAppSelector(authSelectors.user)
 
     const LogoutHandler = async () => {
-        await dispatch(logoutUser())
-
-        const res = await dispatch(logoutUser())
-
-        if (res) {
+        try {
+            await dispatch(logoutUser()).unwrap()
             toast.info(`You've logged out`)
+        } catch {
+            toast.error('Failed to log out. Please try again.')
+        } finally {
+            navigate('/login')
         }
-
-        navigate('/login')
     }
 
     return (
@@ -113,21 +108,6 @@ export function NavUser() {
                                 </div>
                             </div>
                         </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <IconUserCircle />
-                                Account
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <IconCreditCard />
-                                Billing
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <IconNotification />
-                                Notifications
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                             onClick={LogoutHandler}
