@@ -1,12 +1,13 @@
 import { useEffect } from 'react'
 import { fetchSession } from './redux/auth/authThunks'
 import { useAppDispatch } from './redux/hooks/hooks'
-import { Outlet } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Toaster } from './components/ui/sonner'
 
 function App() {
     const dispatch = useAppDispatch()
+    const location = useLocation()
 
     useEffect(() => {
         dispatch(fetchSession())

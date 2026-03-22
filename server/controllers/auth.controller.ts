@@ -9,16 +9,24 @@ const SALT_ROUNDS = 10;
 
 const cookie_settings: CookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: 'none', // set to none as different endpoint for server
+  secure: true,
+  sameSite: "lax",
 };
 
 export async function register(req: Request, res: Response) {
   try {
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const email =
+      typeof req.body.email === "string"
+        ? req.body.email.trim().toLowerCase()
+        : req.body.email;
 
     if (!email || !password) {
       return res.status(400).json({ error: "Email and Password are required" });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({ error: "Password must be at least 8 characters" });
     }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -36,7 +44,7 @@ export async function register(req: Request, res: Response) {
       select: { id: true, email: true },
     });
 
-    return res.status(200).json({ user });
+    return res.status(201).json({ user });
   } catch (err) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -44,7 +52,11 @@ export async function register(req: Request, res: Response) {
 
 export async function login(req: Request, res: Response) {
   try {
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const email =
+      typeof req.body.email === "string"
+        ? req.body.email.trim().toLowerCase()
+        : req.body.email;
 
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password required" });
@@ -52,15 +64,14 @@ export async function login(req: Request, res: Response) {
 
     const user = await prisma.user.findUnique({ where: { email: email } });
     if (!user) {
-      return res.status(401).json({ error: "Invalid Credientials" });
+      return res.status(401).json({ error: "Invalid Credentials" });
     }
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
-      return res.status(401).json({ error: "Invalid Credientials" });
+      return res.status(401).json({ error: "Invalid Credentials" });
     }
 
-    const sessionId = crypto.randomUUID();
     const expiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000); // 3 days
 
     const existingSession = await prisma.session.findFirst({
@@ -72,17 +83,16 @@ export async function login(req: Request, res: Response) {
 
     const { password: userPassword, createdAt, ...SafeUser } = user;
 
-    // if there is no exisitng session make one
+    // if there is no existing session make one
     if (!existingSession) {
-      await prisma.session.create({
+      const session = await prisma.session.create({
         data: {
-          sessionId: sessionId,
           userId: user.id,
           expiresAt: expiresAt,
         },
       });
 
-      res.cookie("session_id", sessionId, {
+      res.cookie("session_id", session.id, {
         expires: expiresAt,
         ...cookie_settings,
       });
@@ -90,11 +100,10 @@ export async function login(req: Request, res: Response) {
       return res.status(200).json({
         message: "You have been logged in",
         user: SafeUser,
-        sessionId: sessionId,
       });
     }
 
-    res.cookie("session_id", existingSession.sessionId, {
+    res.cookie("session_id", existingSession.id, {
       expires: existingSession.expiresAt,
       ...cookie_settings,
     });
@@ -102,7 +111,6 @@ export async function login(req: Request, res: Response) {
     return res.status(200).json({
       message: "You already have a session",
       user: SafeUser,
-      sessionId: existingSession.sessionId,
     });
   } catch (err) {
     return res.status(500).json({ error: "Internal Server Error" });
@@ -114,7 +122,7 @@ export async function logout(req: Request, res: Response) {
     const { session } = req;
 
     await prisma.session.delete({
-      where: { sessionId: session!.sessionId },
+      where: { id: session!.id },
     });
 
     res.clearCookie("session_id", {
@@ -129,7 +137,10 @@ export async function logout(req: Request, res: Response) {
 
 export async function resetPassword(req: Request, res: Response) {
   try {
-    const { email } = req.body;
+    const email =
+      typeof req.body.email === "string"
+        ? req.body.email.trim().toLowerCase()
+        : req.body.email;
 
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
@@ -152,39 +163,30 @@ export async function resetPassword(req: Request, res: Response) {
     });
 
     if (existingResetToken) {
-      return res.status(401).json({
+      const response: { message: string; token?: string } = {
         message: "you currently have a reset token",
-        token: existingResetToken.token, // ⚠️ return this only in dev/testing, not prod
-      });
+      };
+      if (process.env.NODE_ENV !== "production") {
+        response.token = existingResetToken.token;
+      }
+      return res.status(409).json(response);
     }
 
     const token = crypto.randomBytes(32).toString("hex");
 
-    const MAILTRAP_USER = process.env.MAILTRAP_USER;
-    const MAILTRAP_PASS = process.env.MAILTRAP_PASS;
-
-    if (!MAILTRAP_USER || !MAILTRAP_PASS) {
+    if (!process.env.MAILTRAP_TOKEN) {
       return res.status(500).json({
-        error: "MAILTRAP credentials not set in environment variables",
+        error: "MAILTRAP_TOKEN not set in environment variables",
       });
     }
-
-    // const transport = nodemailer.createTransport({
-    //   host: "sandbox.smtp.mailtrap.io",
-    //   port: 2525,
-    //   auth: {
-    //     user: MAILTRAP_USER,
-    //     pass: MAILTRAP_PASS,
-    //   },
-    // });
 
     const transport = nodemailer.createTransport(
       MailtrapTransport({
         token: process.env.MAILTRAP_TOKEN!,
-      })
+      }),
     );
 
-    const resetLink = `${process.env.FRONTEND_URL}/forgot-password/${token}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
 
     try {
       await transport.sendMail({
@@ -270,6 +272,10 @@ export async function resetPasswordToken(req: Request, res: Response) {
       return res.status(400).json({ message: "You must provide a password" });
     }
 
+    if (password.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters" });
+    }
+
     const passwordReset = await prisma.passwordReset.findUnique({
       where: {
         token: resetToken,
@@ -339,7 +345,7 @@ export async function me(req: Request, res: Response) {
 
     await prisma.session.update({
       where: {
-        sessionId: session!.sessionId,
+        id: session!.id,
       },
       data: {
         expiresAt: newExpiresAt,

@@ -23,15 +23,16 @@ model User {
 model PasswordReset {
   id        String   @id @default(cuid())
   token     String   @unique
-  userId    String   
+  userId    String
   expiresAt DateTime
   used      Boolean  @default(false)
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Session {
-  id        Int      @id @default(autoincrement())
-  sessionId String   @unique
+  id        String   @id @default(cuid())
   userId    String   @map("user_id")
   expiresAt DateTime @map("expires_at")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

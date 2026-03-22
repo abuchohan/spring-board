@@ -57,7 +57,7 @@ export default function LandingPage() {
                         </Button>
                         <Button
                             className="bg-white text-slate-950 hover:bg-slate-200"
-                            onClick={() => navigate('/sign-in-options')}
+                            onClick={() => navigate('/login')}
                         >
                             Get Started
                         </Button>
