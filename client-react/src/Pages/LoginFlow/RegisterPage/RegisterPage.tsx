@@ -11,7 +11,6 @@ import { getErrorMessage } from "@/utils/error";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
 const registerSchema = z
   .object({
