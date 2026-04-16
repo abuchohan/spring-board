@@ -12,7 +12,7 @@ Spring Board is a monorepo using **Turbo** + **pnpm workspaces** with two packag
 
 ### Development
 ```bash
-pnpm dev           # Run both server and client concurrently via Turbo
+pnpm dev           # Run server + client-react concurrently via Turbo
 ```
 
 Or run individually:

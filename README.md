@@ -6,27 +6,36 @@ A full-stack starter kit with auth, database, and UI pre-configured.
 
 ---
 
-## Customize for Your Project
+## Template Checklist
 
-### 1. Rename "Spring Board"
+Go through these when you clone this for a new project. Delete this section from your README when done.
 
-Search and replace `Spring Board` / `spring-board` / `springboard` with your app name in:
+### Identity
+- [ ] Search and replace `Spring Board` / `spring-board` / `springboard` with your app name
+  - `client-react/src/Pages/LandingPage/LandingPage.tsx` — navbar logo, hero text, footer copyright
+  - `package.json` (root, `server/`, `client-react/`) — `"name"` fields
+  - This README title and overview
+- [ ] Update `README.md` to describe your app (replace this file's content)
 
-- `client-react/src/Pages/LandingPage/LandingPage.tsx` — navbar logo, hero text, footer copyright
-- `package.json` (root, `server/`, `client-react/`) — `"name"` fields
-- This README
+### Landing Page
+- [ ] Edit `client-react/src/Pages/LandingPage/LandingPage.tsx`:
+  - Hero headline and description
+  - Feature cards (titles, descriptions, icons)
+  - GitHub link (`https://github.com/your-repo`)
+  - Footer links (Privacy, Terms, social)
+  - Footer copyright year and name
 
-### 2. Update the Landing Page
+### Theme & Branding
+- [ ] Update color tokens in `client-react/src/index.css` (oklch values for `primary`, `secondary`, `accent`, `background`)
+- [ ] Update font if needed (currently system default via Tailwind)
 
-Edit `client-react/src/Pages/LandingPage/LandingPage.tsx`:
+### Auth & Email
+- [ ] Set your Resend API key in `server/.env` (`RESEND_API_KEY`)
+- [ ] Update the sender address in `server/services/email.service.ts` (currently hardcoded)
+- [ ] Update email template copy/styles in the email service
+- [ ] Test password reset flow end-to-end
 
-- Hero headline and description
-- Feature cards (titles, descriptions, icons)
-- GitHub link (`https://github.com/your-repo`)
-- Footer links (Privacy, Terms, Twitter/social)
-- Footer copyright year and name
-
-### 3. Configure Environment Variables
+### Environment Variables
 
 **Backend** — copy and fill in:
 ```bash
@@ -36,7 +45,7 @@ cp server/.env.example server/.env
 | Variable | Description |
 |---|---|
 | `DATABASE_URL` | PostgreSQL connection string |
-| `MAILTRAP_TOKEN` | API token from [mailtrap.io](https://mailtrap.io) (for password reset emails) |
+| `RESEND_API_KEY` | API key from [resend.com](https://resend.com) (for password reset emails) |
 | `FRONTEND_URL` | Your frontend URL (e.g. `http://localhost:5173`) |
 | `NODE_ENV` | `development` or `production` |
 
@@ -45,15 +54,15 @@ cp server/.env.example server/.env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-Update `VITE_API_URL` to your deployed backend URL when going to production.
+Update `VITE_API_URL` to your deployed backend URL in production.
 
-### 4. Set Up the Database
+### Database
+- [ ] Update `server/prisma/schema.prisma` with your app's models (extend or keep User, Session, PasswordReset)
+- [ ] Run `npx prisma db push` inside `server/` to apply schema
+- [ ] Update `server/prisma/seed.ts` with your seed data, then `npx prisma db seed`
 
-```bash
-cd server
-npx prisma db push     # apply schema
-npx prisma db seed     # optional: seed initial data
-```
+### Cleanup
+- [ ] Delete this checklist once done
 
 ---
 
