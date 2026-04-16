@@ -19,7 +19,8 @@
   },
   "workspaces": [
     "server",
-    "client-react"
+    "client-react",
+    "client-next"
   ],
   "packageManager": "pnpm@10.0.0"
 }
