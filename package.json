@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --filter=server --filter=client-next",
     "build": "turbo run build",
     "check-types": "turbo run check-types"
   },
@@ -19,7 +19,8 @@
   },
   "workspaces": [
     "server",
-    "client-react"
+    "client-react",
+    "client-next"
   ],
   "packageManager": "pnpm@10.0.0"
 }
